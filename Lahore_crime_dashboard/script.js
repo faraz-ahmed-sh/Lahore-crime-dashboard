@@ -95,7 +95,7 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
 	    g.append("g")
 	        .attr("class", "x axis")
-	       	.attr("transform", "translate(0," + height+10 + ")")
+	       	.attr("transform", "translate(0," + height + ")")
 	      	.call(d3.axisBottom(xScale).ticks(7));
 
 	    g.append("g")
