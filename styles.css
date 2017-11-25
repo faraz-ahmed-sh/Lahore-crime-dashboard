@@ -1,15 +1,28 @@
-.legend {
-	    float:bottom;
-	    margin-right: 10em;
-	    border-bottom-width: 15px;
-	    border-top-style: solid;
-	    font-size: .75em;
-	    width: 10%;
-	    padding-left: 0;
-	    padding-right: 50;
-	}
+#charts {
+    padding: 10px 0;
+  }
 
-p1 {
-	font-weight: bold;
-	font-size: 15px;
-}
+  .chart {
+    display: inline-block;
+    height: 151px;
+    margin-bottom: 20px;
+  }
+
+  .reset {
+    padding-left: 1em;
+    font-size: smaller;
+    color: #ccc;
+  }
+
+  .background.bar {
+    fill: #ccc;
+  }
+
+  .foreground.bar {
+    fill: red;
+  }
+
+  .brush-handle {
+    fill: #eee;
+    stroke: #666;
+  }
