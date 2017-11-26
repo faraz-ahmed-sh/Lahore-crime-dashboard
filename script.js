@@ -1,117 +1,3 @@
-// function neighborhoodPlot() {
-
-//   var margin = {top: 20, right: 20, bottom: 30, left: 40},
-//     width = 400,
-//     height = 400,
-//     innerWidth = width - margin.left - margin.right,
-//     innerHeight = height - margin.top - margin.bottom,
-//     xValue = function(d) { return d[0]; },
-//     yValue = function(d) { return d[1]; },
-//     xScale = d3.scaleBand().padding(0.1),
-//     yScale = d3.scaleLinear();
-
-//   function chart(selection) {
-//     selection.each(function (data) {
-
-//       // Select the svg element, if it exists.
-//       var svg = d3.select(this).selectAll("svg").data([data]);
-
-//       // Otherwise, create the skeletal chart.
-//       var svgEnter = svg.enter().append("svg");
-//       var gEnter = svgEnter.append("g");
-//       gEnter.append("g").attr("class", "x axis");
-//       gEnter.append("g").attr("class", "y axis");
-
-//       // Update the outer dimensions.
-//       svg.merge(svgEnter).attr("width", width)
-//         .attr("height", height);
-
-//       // Update the inner dimensions.
-//       var g = svg.merge(svgEnter).select("g")
-//           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-//       xScale.rangeRound([0, innerWidth])
-//         .domain(data.map(function(d) { return d["Neighborhood"]; }));
-      
-      
-//       yScale.rangeRound([innerHeight, 0])
-//         .domain([0, d3.max(data, function(d) { return d.frequency; })]);
-
-      
-//       g.select(".x.axis")
-//           .attr("transform", "translate(0," + innerHeight + ")")
-//           .call(d3.axisBottom(xScale));
-
-      
-//       g.select(".y.axis")
-//           .call(d3.axisLeft(yScale).ticks(10, "%"))
-//         .append("text")
-//           .attr("transform", "rotate(-90)")
-//           .attr("y", 6)
-//           .attr("dy", "0.71em")
-//           .attr("text-anchor", "end")
-//           .text("Frequency");
-
-//       var bars = g.selectAll(".bar")
-//         .data(function (d) { return d; });
-
-//       bars.enter().append("rect")
-//           .attr("class", "bar")
-//         .merge(bars)
-//           .attr("x", X)
-//           .attr("y", Y)
-//           .attr("width", xScale.bandwidth())
-//           .attr("height", function (d) { return height - Y(d)});
-
-//       bars.exit().remove();
-//     });
-
-//   }
-
-// // The x-accessor for the path generator; xScale ∘ xValue.
-//   function X(d) {
-//     return xScale(xValue(d));
-//   }
-
-//   // The y-accessor for the path generator; yScale ∘ yValue.
-//   function Y(d) {
-//     return yScale(yValue(d));
-//   }
-
-//   chart.margin = function(_) {
-//     if (!arguments.length) return margin;
-//     margin = _;
-//     return chart;
-//   };
-
-//   chart.width = function(_) {
-//     if (!arguments.length) return width;
-//     width = _;
-//     return chart;
-//   };
-
-//   chart.height = function(_) {
-//     if (!arguments.length) return height;
-//     height = _;
-//     return chart;
-//   };
-
-//   chart.x = function(_) {
-//     if (!arguments.length) return xValue;
-//     xValue = _;
-//     return chart;
-//   };
-
-//   chart.y = function(_) {
-//     if (!arguments.length) return yValue;
-//     yValue = _;
-//     return chart;
-//   };
-
-//   return chart;
-// }
-
 var margin =  {top: 20, right: 20, bottom: 30, left: 80};
 var width = 720 - margin.left - margin.right;
 var height = 450 - margin.top - margin.bottom;
@@ -137,7 +23,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     }
 	
 	data.forEach( function(d, i) {
-		// unary+ operator to read numerical data correctly.
 		d.index = i
 
     if(parseTime(d["Time"]) == null && (d["Time"] != 0))
@@ -150,9 +35,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       d["Time"] = parseTime4(d["Time"])
     else
       d["Time"] = parseTime(d["Time"])
-
-    //else
-    //  d["Time"] = parseTime3(d["Time"])
 
     if (d["Time"] == null)
       //console.log(d.hour)
@@ -167,20 +49,11 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 		d["hour"] = +d["hour"] || 0
 		d["Date"] = new Date(d["Date"].getFullYear(), d["Date"].getMonth(), d["Date"].getDate(), 
                 d["Time"].getHours(), d["Time"].getMinutes())
-    //console.log(d["Date"].getFullYear(), d["Date"].getMonth(), d["Date"].getDay(), 
-    //            d["Time"].getHours(), d["Time"].getMinutes())
-
-    //console.log(d["Time"])
 	});
 
-  
-  //console.log(data)
 
 
 	dataset = data;
-	//console.log(dataset)
-	//makeBarChart(dataset);
-	//console.log(dataset["Date"].getHours());
 
 	// A nest operator, for grouping the flight list.
   	var nestByDate = d3.nest()
@@ -194,8 +67,8 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
 	//Define Dimensions
 	var crimeTypeDim = ndx.dimension(function(d) { return d["Crime Type"]; });
-	var date = ndx.dimension(function(d) {return d.Date});
-	var hourDim = ndx.dimension(function(d) {return d.Date.getHours() + d["Date"].getMinutes() / 60});
+	var date = ndx.dimension(function(d) { return d["Date"] });
+	var hourDim = ndx.dimension(function(d) {return d["Date"].getHours() + d["Date"].getMinutes() / 60});
   var neighborhoodDim = ndx.dimension(function(d) { return d["Neighborhood"]; });
 	var allDim = ndx.dimension(function(d) {return d;});
 
@@ -207,25 +80,24 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   var neighborhoodGroup = neighborhoodDim.group();
 	var all = ndx.groupAll();
 
-
-
 	//make a horizontal bar chart to show the count of Neighborhood
 
 
   function neighborhoodChart() {
     var margin = {top: 20, right: 20, bottom: 30, left: 40}
-    width = 400,
-    height = 400,
+    width = 300,
+    height = 300,
     xValue = function(d) { return d[0]; };
     yValue = function(d) { return d[1]; };
     
     xScale = d3.scaleBand().padding(0.1);
     yScale = d3.scaleLinear();
-    //console.log(xValue, yValue)
+
+    onMouseOver = function () { },
+    onMouseOut = function () { };
 
     function chart(selection) {
       selection.each(function (data) {
-        console.log(data)
 
         // select the svg element if it exists
         var svg = d3.select(this).selectAll("svg").data([data]);
@@ -234,35 +106,37 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
         var svgEnter = svg.enter().append("svg");
         var gEnter = svgEnter.append("g");
+
         gEnter.append("g").attr("class", "x axis")
         gEnter.append("g").attr("class", "y axis")
 
         // update the outer dimensions
-        svg.merge(svgEnter).attr("width", width)
-        .attr("height", height)
+        svg.merge(svgEnter).attr("width", width+margin.left)
+        .attr("height", height+margin.bottom*2)
 
         // update the inner dimensions
         var g = svg.merge(svgEnter).select("g")
           .attr("transform", "translate(" + margin.left + "," +  margin.top + ")")
 
         xScale.range([0, width - margin.bottom - margin.top])
-        //.domain(data.map(function (d) { return d.key; }))
+        .domain(data.map(function(d) { return d.key; })).padding(0.1);
+  //    yScale.domain(neighborhoodCrimeCount.map(function(d) { return d.key; })).padding(0.1);
 
         yScale.rangeRound([height, 0])
-        .domain([0, group.top(1)[0].value])
+        .domain([0, (d3.max(data, function(d) { return d.value; }))]);
 
         g.append("g")
            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
+            .attr("transform", "translate(0," + (height) + ")")
           .call(d3.axisBottom(xScale));
 
        g.append("g")
            .attr("class", "y axis")
-           .attr("transform", "translate(0," + height*2 + ")")
+           .attr("transform", "translate(0," + (margin.left-margin.right*2) + ")")
            .call(d3.axisLeft(yScale).ticks(7));
 
         var bars = g.selectAll(".bar")
-        .data(function (d) { return d; });
+        .data(data);
 
         bars.enter().append("rect")
           .attr("class", "bar")
@@ -271,6 +145,8 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
           .attr("y", Y)
           .attr("width", xScale.bandwidth())
           .attr("height", function (d) { return height - Y(d)})
+          .on("mouseover", onMouseOver)
+          .on("mouseout", onMouseOut);
 
           bars.exit().remove();
       });
@@ -308,16 +184,37 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       return chart;
     };
 
+    chart.width = function (_) {
+      if (!arguments.length) return width;
+      width = _;
+      return chart;
+    };
+
+    chart.height = function (_) {
+      if (!arguments.length) return height;
+      height = _;
+      return chart;
+    };
+
     chart.group = function (_) {
       if (!arguments.length) return group;
       group = _;
       return chart;
     };
 
+    chart.onMouseOver = function (_) {
+      if (!arguments.length) return onMouseOver;
+      onMouseOver = _;
+      return chart;
+    };
+
+    chart.onMouseOut = function (_) {
+      if (!arguments.length) return onMouseOut;
+      onMouseOut = _;
+      return chart;
+    };
+
     return chart;
-
-
-
   };
 	// var neighborhoodCrimeCount = d3.nest()
  //  	.key(function(d) { return d["Neighborhood"]; })
@@ -392,12 +289,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       .style("stroke", "black");
     })
 
-    //console.log(neighborhoodGroup.top(5))
-
-
-
-    
-
   	//Make charts on which cross filter will be applied
 	var charts = [
 	
@@ -413,9 +304,11 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         .dimension(date)
         .group(dateGroup)
         .x(d3.scaleTime()
-          .domain([new Date(2014, 0, 1), new Date(2014, 5, 31)])
-          .rangeRound([10, 10 *70]))
-        .filter([new Date(2014, 1, 1), new Date(2014, 1, 10)])
+          .domain([new Date(2014, 0, 1), new Date(2014, 11, 31)])
+          .rangeRound([5, 10 *70]))
+          //.ticks(d3.timeMonth))
+          //.tickFormat(d3.timeFormat("%B")))
+        //.filter([new Date(2014, 1, 1), new Date(2014, 1, 10)])
         .xTickRot(-95),
 
     barChart()
@@ -424,32 +317,12 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         //.margin({top: 50, right: 50, bottom: 50, left: 50 })
       .x(d3.scaleLinear()
         .domain([0, 24])
-        .rangeRound([10, 10 * 40]))
+        .rangeRound([10, 9 * 40]))
       	//.filter(["1"])
-      	.xTickRot(-35),
-
-    // barChart()
-    //     .dimension(neighborhoodDim)
-    //     .group(neighborhoodGroup)
-    //     .x(d3.scaleBand()
-    //       .domain(dataset.map(function (d) { return d["Neighborhood"]; }))
-    //     .rangeRound([10, 5 * 80]))
-    //     .gBrush(false)
-        //.y(d3.scaleLinear())
-          //d3.max(neighborhoodDim, function(d) { return d.value; })])
+      	.xTickRot(-35)
     
-    //console.log(dataset)
-    neighborhoodChart()
-        .dimension(neighborhoodDim)
-        .group(neighborhoodGroup)
-        .x(function (d) { return d["Neighborhood"]; })
-        //.y(function (d) { return d[]})
-
-        //.y(function (d) { return d[""]})
-        //x(d3.scaleLinear)
 
   ];
-  console.log(charts)
 
   // Given our array of charts, which we assume are in the same order as the
   // .chart elements in the DOM, bind the charts to the DOM and render them.
@@ -457,25 +330,74 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   var chart = d3.selectAll(".chart")
       .data(charts)
 
+  var myNeighborhoodChart = neighborhoodChart()
+        .width(700)
+        .dimension(neighborhoodDim)
+        .group(neighborhoodGroup)
+        .x(function (d) { return d.key; })
+        .y(function (d) { return d.value})
+  //console.log(myNeighborhoodChart)
+
+  neighborhoodData = neighborhoodGroup.all()
+  //console.log(neighborhoodGroup.top(10))
+  myNeighborhoodChart.onMouseOver(function (d) {
+    neighborhoodDim.filter(d.key);
+    update();
+  }).onMouseOut(function (d) {
+    neighborhoodDim.filterAll();
+    update();
+  });
+
+
+  function update() {
+
+    d3.select("#neighborhood-chart")
+    .datum(neighborhoodData)
+    .call(myNeighborhoodChart)
+    .select(".x.axis")
+    .selectAll(".tick text")
+    .attr("transform", "rotate(-90)");
+
+    d3.select("#crime-type-chart")
+    .datum(crimeTypeGroup.all())
+    .call(charts[0])
+
+    d3.select("#month-chart")
+    .datum(dateGroup.all())
+    .call(charts[1])
+
+    d3.select("#hour-chart")
+    .datum(hourGroup.all())
+    .call(charts[2])
+    
+  }
+
+  update();
+
   // Render the initial list.
   //var list = d3.selectAll(".list")
   //    .data([crimeList]);
+
 
   // Render the total.
   d3.selectAll("#total")
       .text(ndx.size());
 
+
   renderAll();
 
-  // Renders the specified chart or list.
-  function render(method) {
-    d3.select(this).call(method);
-  }
+  // // Renders the specified chart or list.
+  // function render(method) {
+  //   d3.select(this).call(method);
+  //   //update();
+  // }
 
   // Whenever the brush moves, re-rendering everything.
   function renderAll() {
-    chart.each(render);
+    chart.each(update);
+    //update.each(render);
     //list.each(render);
+    //update();
     d3.select("#active").text(all.value());
   }
 
@@ -483,6 +405,7 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   window.filter = function(filters) {
     filters.forEach(function(d, i) {charts[i].filter(d)});
     renderAll();
+
   };
 
   window.reset = function(i) {
@@ -558,6 +481,7 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     
 
     function chart(div) {
+
       const width = x.range()[1];
       const height = y.range()[0];
 
