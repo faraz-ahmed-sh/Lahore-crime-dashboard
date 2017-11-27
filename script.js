@@ -28,23 +28,14 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     if(parseTime(d["Time"]) == null && (d["Time"] != 0))
       d["Time"] = parseTime2(d["Time"])
     else if(parseTime(d["Time"]) == null && (d["Time"] == 0))
-      //console.log(d["Time"])
       d["Time"] = parseTime3(d["Time"])
-    //console.log(d["Time"])
     else if(parseTime(d["Time"]) == null)
       d["Time"] = parseTime4(d["Time"])
     else
       d["Time"] = parseTime(d["Time"])
 
-    if (d["Time"] == null)
-      //console.log(d.hour)
-      console.log(d.Date)
-    //console.log(d.index)
-
-		//d["Time"] = parseTime(d["Time"]) || 0
-		//d["Time"] = d3.timeParse("%H:%M:%S")(d["Time"])
 		d["year"] = +d["year"] || 0
-		//d["datetime"] = parseDate(d["datetime"])
+
 		d["Date"] = parseDate(d["Date"]) || 0
 		d["hour"] = +d["hour"] || 0
 		d["Date"] = new Date(d["Date"].getFullYear(), d["Date"].getMonth(), d["Date"].getDate(), 
@@ -55,13 +46,13 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
 	dataset = data;
 
-	// A nest operator, for grouping the flight list.
-  	var nestByDate = d3.nest()
-      .key(function(d) {return d3.timeDay(d.Date)})
+	// A nest operator, for grouping the crime list.
+  	// var nestByDate = d3.nest()
+   //    .key(function(d) {return d3.timeDay(d.Date)})
 
     //console.log(nestByMonth)
 	
-	//Create a Crossfilter instance
+	//Create a Crossfilter instance for the crime dataset
 	var ndx = crossfilter(dataset);
 	//console.log(ndx)
 
@@ -74,15 +65,12 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
 	//Group Data
 	var crimeTypeGroup = crimeTypeDim.group();
-	//console.log(crimeTypeGroup)
 	var dateGroup = date.group();
 	var hourGroup = hourDim.group(Math.floor);
   var neighborhoodGroup = neighborhoodDim.group();
 	var all = ndx.groupAll();
 
-	//make a horizontal bar chart to show the count of Neighborhood
-
-
+	//make a bar chart for the Neighborhood with mouseover and mouseout
   function neighborhoodChart() {
     var margin = {top: 20, right: 20, bottom: 30, left: 40}
     width = 300,
