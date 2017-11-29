@@ -5,11 +5,14 @@
   fill: red;
 }
 #neighborhood-chart .bar:hover {
+  mode: false;
   fill: steelblue;
 }
+
+/*.hover: { mode: false }
 .x.axis path {
   display: none;
-}
+}*/
 
 .chart {
     display: inline-block;

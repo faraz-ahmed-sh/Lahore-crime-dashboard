@@ -59,10 +59,11 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
   //Group Data
   var crimeTypeGroup = crimeTypeDim.group();
-  var dateGroup = date.group(d3.timeDay);
+  var dateGroup = date.group(d3.timeWeek);
   var hourGroup = hourDim.group(Math.floor);
   var neighborhoodGroup = neighborhoodDim.group();
   var all = ndx.groupAll();
+
 
   //make a bar chart for the decision variables (date, hour, and crime type) with brushes
   function brushedBarChart() {
@@ -71,9 +72,8 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     height = 300,
     innerWidth = width - margin.left - margin.right,
     innerHeight = height - margin.top - margin.bottom,
-    xValue = function(d) { return d[0]; },
-    yValue = function(d) { return d[1]; },
-    xScale = d3.scaleBand().padding(0.1),
+
+    xScale;
     yScale = d3.scaleLinear(),
     onBrushed = function () {};
 
@@ -85,14 +85,13 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
         // otherwise, create the skeletal chart
         var svgEnter = svg.enter().append("svg");
+        
         var gEnter = svgEnter.append("g");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
-        gEnter.append("g")
-        .attr("class", "brush")
-        .call(d3.brushX()
-          .extent([[0,0], [width, innerHeight]])
-          .on("brush", brushed));
+        gEnter.append("g").attr("class", "brush");
+        
+        //gBrush.selectAll("rect").attr("height", height);
 
         innerWidth = width - margin.left - margin.right,
         innerHeight = height - margin.top - margin.bottom,
@@ -107,13 +106,26 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         var g = svg.merge(svgEnter).select("g")
           .attr("transform", "translate(" + margin.left + "," +  margin.top + ")");
 
-        //yScale = d3.scaleLinear();
 
-        xScale.range([0, innerWidth])
-        .domain(data.map(xValue));
+        // var brush = d3.brush()
+        //   .extent([xScale(.95), xScale(1.05)])
+        //   .on("brush", brushmove);
+          
+        // var brushg = gEnter.append("g")
+        //     .attr("class", "brush")
+        //     .call(brush)
+
+        // brushg.selectAll("rect")
+        //     .attr("height", height/2);
+
+        // brushg.selectAll(".resize")
+        //     .append("path")
+        //     .attr("d", resizePath);
+
+        xScale.range([0, innerWidth]);
 
         yScale.rangeRound([innerHeight, 0])
-        .domain([0, (d3.max(data, yValue))]);
+        .domain([0, (d3.max(data, function(d) { return d.value; }))]);
 
         g.select(".x.axis")
           .attr("transform", "translate(0," + yScale.range()[0] + ")")
@@ -129,33 +141,69 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         bars.enter().append("rect")
           .attr("class", "bar")
           .merge(bars)
-          .attr("x", X)
-          .attr("y", Y)
-          .attr("width", xScale.bandwidth())
-          .attr("height", function (d) { return innerHeight - Y(d); });
+          .attr("x", function(d) { return xScale(d.key); })
+          .attr("y", function(d) { return yScale(d.value); })
+          .attr("width", (width-(width/data.length)) / (data.length+8))
+          .attr("height", function (d) { return innerHeight - yScale(d.value); });
         
         bars.exit().remove();
+
+        g.select(".brush").call(d3.brushX()
+          .extent([[0,0], [width, innerHeight]])
+          .on("brush", brushed))
+
+
+    //     // Dark arts of ugly hackery ahead 
+    // function brushmove() { 
+    //     // Get brush extent vals
+    //     var s = brush.extent(), lower = s[0], upper = s[1];
+    //     // Select bar rects and adjust opacity
+    //     gEnter.selectAll("rect")
+    //         .style("opacity", function(d) {
+    //             // Get data value keys and scale them
+    //             var k = xScale(d.key) + barPadding * xScale.rangeBand();
+    //             // If d.key is within extent adjust opacity
+    //             return lower <= k && k <= upper ? "1" : ".2";  
+    //          });
+        
+    //     // Calculate pseudo extent from .range() and .rangeBand()
+    //     var leftEdge = xScale.range(), width = xScale.rangeBand(); 
+    //     for (var _l=0; lower > (leftEdge[_l] + width); _l++) {};
+    //     for (var _u=0; upper > (leftEdge[_u] + width); _u++) {};
+    //     // Filter crossfilter by the pseudo extent
+    //     filt = byScr.filterRange([ xScale.domain()[_l], xScale.domain()[_u] ])
+    //     // Render filtered hospital plots
+    //     update();
+    //     // .selectAll("g.hospital").remove();
+    //     // _mapChart.selectAll("g.hospital").transition(); 
+    //     // _mapChart.select("g.hospital").attr("d", plotHospitals(filt))
+
+    // } // End brushmove
+
       });
+
     }
 
     function brushed() {
       if (!d3.event.sourceEvent) return; // Only transition after input.
       if (!d3.event.selection) return; // Ignore empty selections.
 
-      var selected = d3.event.selection.map(xScale.invert);
+      var selection = d3.event.selection.map(xScale.invert);
 
-      console.log(selected)
+      //console.log(selected)
+      //console.log("fa")
 
-      onBrushed(selected);
+      onBrushed(selection);
+      //update();
     }
 
-    function X(d) {
-      return xScale(xValue(d));
-    }
+    // function X(d) {
+    //   return xScale(xValue(d));
+    // }
 
-    function Y(d) {
-      return yScale(yValue(d));
-    }
+    // function Y(d) {
+    //   return yScale(yValue(d));
+    // }
 
     chart.margin = function (_) {
       if (!arguments.length) return margin;
@@ -164,14 +212,14 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     };
 
     chart.x = function (_) {
-      if (!arguments.length) return xValue;
-      xValue = _;
+      if (!arguments.length) return xScale;
+      xScale = _;
       return chart;
     };
 
     chart.y = function (_) {
-      if (!arguments.length) return yValue;
-      yValue = _;
+      if (!arguments.length) return yScale;
+      yScale = _;
       return chart;
     };
 
@@ -205,20 +253,24 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       return chart;
     };
 
+    //chart.gBrush = () => gBrush;
+
     return chart;
   };
 
 
+
+
   //make a bar chart for the Neighborhood with mouseover and mouseout
-  function neighborhoodChart() {
+  function mouseonBarChart() {
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 300,
     height = 300,
     innerWidth = width - margin.left - margin.right,
     innerHeight = height - margin.top - margin.bottom,
-    xValue = function(d) { return d[0]; },
-    yValue = function(d) { return d[1]; },
-    xScale = d3.scaleBand().padding(0.1),
+    //xValue = function(d) { return d[0]; },
+    //yValue = function(d) { return d[1]; },
+    xScale;
     yScale = d3.scaleLinear(),
     onMouseOver = function () { },
     onMouseOut = function () { };
@@ -250,20 +302,22 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
         //yScale = d3.scaleLinear();
 
-        xScale.range([0, innerWidth])
-        .domain(data.map(xValue));
+        xScale.range([0, innerWidth]);
+        //.domain(data.map(xValue));
   //    yScale.domain(neighborhoodCrimeCount.map(function(d) { return d.key; })).padding(0.1);
 
         yScale.range([innerHeight, 0])
-        .domain([0, (d3.max(data, yValue))]);
+        .domain([0, (d3.max(data, function(d) { return d.value; }))]);
 
-        g.select(".x.axis")
-            .attr("transform", "translate(0," + (innerHeight) + ")")
-          .call(d3.axisBottom(xScale));
+        // g.select(".x.axis")
+        //   .attr("transform", "translate(0," + (innerHeight) + ")")
+        //   .call(d3.axisBottom(xScale));
 
        g.select(".y.axis")
            //.attr("transform", "translate(0," + (margin.left-margin.right*2) + ")")
            .call(d3.axisLeft(yScale).ticks(7));
+
+           //console.log(yScale)
 
         var bars = g.selectAll(".bar")
         .data(function (d) { return d; });
@@ -271,10 +325,12 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         bars.enter().append("rect")
           .attr("class", "bar")
           .merge(bars)
-          .attr("x", X)
-          .attr("y", Y)
-          .attr("width", xScale.bandwidth())
-          .attr("height", function (d) { return innerHeight - Y(d); })
+          .style("margin-top", "10px")
+          .attr("x", function(d) { return xScale(d.key); })
+          .attr("y", function(d) { return yScale(d.value); })
+          //create space between bars
+          .attr("width", (width-(width/data.length)) / (data.length+2))
+          .attr("height", function (d) { return innerHeight - yScale(d.value); })
           .on("mouseover", onMouseOver)
           .on("mouseout", onMouseOut);
 
@@ -283,13 +339,13 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     }
 
 
-    function X(d) {
-      return xScale(xValue(d));
-    }
+    // function X(d) {
+    //   return xScale(xValue(d));
+    // }
 
-    function Y(d) {
-      return yScale(yValue(d));
-    }
+    // function Y(d) {
+    //   return yScale(yValue(d));
+    // }
 
     chart.margin = function (_) {
       if (!arguments.length) return margin;
@@ -298,14 +354,15 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     };
 
     chart.x = function (_) {
-      if (!arguments.length) return xValue;
-      xValue = _;
+      if (!arguments.length) return xScale;
+      //x = _;
+      xScale = _;
       return chart;
     };
 
     chart.y = function (_) {
-      if (!arguments.length) return yValue;
-      yValue = _;
+      if (!arguments.length) return yScale;
+      yScale = _;
       return chart;
     };
 
@@ -348,62 +405,223 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     return chart;
   };
 
-    var mapWidth = 550;
-    var mapHeight = 550;
 
-   //make a map of Lahore's towns
-    console.log(height)
-    var svg = d3.select("#pakistanMap")
-    .append('svg') 
-    .attr('width', mapWidth)
-    .attr('height', mapHeight);
 
-    var g = svg.append("g")
+
+  function LahoreCloroplethByTown() {
+
+    var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    width = 960,
+    height = 600,
+    innerWidth = width - margin.left - margin.right,
+    innerHeight = height - margin.top - margin.bottom,
+    color = function(d) { return d.value; },
+    //id = function(d) { return d.id; },
+    pak = null,
+    updateDomain = true,
+    path = d3.geoPath(),
+    colorScale = d3.scaleThreshold()
+      .range(d3.schemeBlues[9]);
+    // dicValues = d3.map();
+
+    function update(sel, data) {
+    // Select the svg element, if it exists.
+    var svg = d3.select(sel).selectAll("svg").data([data]);
+
+    // Otherwise, create the skeletal chart.
+    var svgEnter = svg.enter().append("svg");
+    var gEnter = svgEnter.append("g");
+    gEnter.append("g").attr("class", "states");
+    gEnter.append("path").attr("class", "state-borders");
     
-    var projection = d3.geoMercator();
+    // Update the outer dimensions.
+    svg.merge(svgEnter).attr("width", width)
+      .attr("height", height);
 
-    var path = d3.geoPath()
-      .projection(projection);
-    
-    d3.json("lahore_towns_topojson.json", function(err, pak) {
-      //console.log(pak.objects.lahore_towns_geojson)
+    innerWidth = width - margin.left - margin.right;
+    innerHeight = height - margin.top - margin.bottom;
 
-      var neighbourhoods = topojson.feature(pak, pak.objects.lahore_towns_geojson); 
+    // Update the inner dimensions.
+    var g = svg.merge(svgEnter).select("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top +
+          "), scale("+ Math.min(innerWidth/960, innerHeight/600) + ")");
+
+    if (updateDomain) {
+      // this a threshold scale with 9 steps, so the domain needs to be 9 steps
+      //
+      var domain = d3.extent(data.map(color));
+      colorScale.domain(d3.range(domain[0], domain[1], (domain[1]-domain[0])/9));
+
+      // Draw the shapes
+    var states = g.select(".states")
+      .selectAll("path")
+      .data(topojson.feature(pak, pak.objects.states).features);
+
+    states
+      .enter()
+        .append("path")
+      .merge(states)
+        .attr("d", path)
+        .style("fill", "white"); //default value
+
+    // var statesValues = g.select(".states")
+    //   .selectAll("path")
+    //   .data(data, id);
+
+    // statesValues
+    //   .style("fill", function (d) {
+    //     return colorScale(color(d));
+    //   })
+    //   .on("mouseenter", function (d) {
+    //     console.log(color(d));
+    //     console.log(d);
+    //   });
+
+
+    // g.select(".state-borders")
+    //   .attr("d", path(topojson.mesh(usShapes, usShapes.objects.states, function(a, b) { return a !== b; })));
+
+
+  }
+
+  function chart(selection) {
+    selection.each(function (data) {
+      var sel = this;
+      if (usShapes===null) {
+        // If we don't have the geo shapes, load them
+        d3.json("lahore_towns_topojson.json", function(error, _pak) {
+          if (error) throw error;
+          usShapes = _pak;
+
+          update(sel, data);
+        });
+      } else {
+
+        // Do we already have the geo shapes? then just draw
+        update(sel, data);
+      }
+    });
+
+  }
+
+  chart.margin = function(_) {
+    if (!arguments.length) return margin;
+    margin = _;
+    return chart;
+  };
+
+  chart.width = function(_) {
+    if (!arguments.length) return width;
+    width = _;
+    return chart;
+  };
+
+  chart.height = function(_) {
+    if (!arguments.length) return height;
+    height = _;
+    return chart;
+  };
+
+  chart.id = function(_) {
+    if (!arguments.length) return id;
+    id = _;
+    return chart;
+  };
+
+  chart.color = function(_) {
+    if (!arguments.length) return color;
+    color = _;
+    return chart;
+  };
+
+  chart.colorScale = function(_) {
+    if (!arguments.length) return colorScale;
+    colorScale = _;
+    return chart;
+  };
+
+  chart.updateDomain = function(_) {
+    if (!arguments.length) return updateDomain;
+    updateDomain = _;
+    return chart;
+  };
+
+
+  return chart;
+}
+
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+      var mapWidth = 550;
+      var mapHeight = 550;
+
+     //make a map of Lahore's towns
+      var svg = d3.select("#pakistanMap")
+      .append('svg') 
+      .attr('width', mapWidth)
+      .attr('height', mapHeight);
+
+      var g = svg.append("g")
       
-      // set default projection values 
-      projection
-          .scale(1)
-          .translate([0, 0]);
+      var projection = d3.geoMercator();
+
+      var path = d3.geoPath()
+        .projection(projection);
       
-      // creates bounding box and helps with projection and scaling
-      var b = path.bounds(neighbourhoods),
-          s = .95 / Math.max((b[1][0] - b[0][0]) / mapWidth, (b[1][1] - b[0][1]) / mapHeight),
-          t = [(mapWidth - s * (b[1][0] + b[0][0])) / 2, (mapHeight - s * (b[1][1] + b[0][1])) / 2];
-      
-      // set project with bounding box data
-      projection
-          .scale(s)
-          .translate(t);
+      d3.json("lahore_towns_topojson.json", function(err, pak) {
+        //console.log(pak.objects.lahore_towns_geojson)
 
-      svg.append("g")
-      .attr("class", "districts")
-    .selectAll("path")
-      .data(topojson.feature(pak, pak.objects.lahore_towns_geojson).features)
-    .enter().append("path")
-      .attr("d", path)
-      .style("fill", "white")
-      .style("stroke", "black");
-    })
+        var neighbourhoods = topojson.feature(pak, pak.objects.lahore_towns_geojson); 
+        
+        // set default projection values 
+        projection
+            .scale(1)
+            .translate([0, 0]);
+        
+        // creates bounding box and helps with projection and scaling
+        var b = path.bounds(neighbourhoods),
+            s = .95 / Math.max((b[1][0] - b[0][0]) / mapWidth, (b[1][1] - b[0][1]) / mapHeight),
+            t = [(mapWidth - s * (b[1][0] + b[0][0])) / 2, (mapHeight - s * (b[1][1] + b[0][1])) / 2];
+        
+        // set project with bounding box data
+        projection
+            .scale(s)
+            .translate(t);
 
-  //Make charts
+        svg.append("g")
+        .attr("class", "districts")
+      .selectAll("path")
+        .data(topojson.feature(pak, pak.objects.lahore_towns_geojson).features)
+      .enter().append("path")
+        .attr("d", path)
+        .style("fill", "white")
+        .style("stroke", "black");
+      })
 
-  
-  var myNeighborhoodChart = neighborhoodChart()
+
+  // Make charts
+  var myNeighborhoodChart = mouseonBarChart()
         .width(300)
         .dimension(neighborhoodDim)
         .group(neighborhoodGroup)
-        .x(function (d) { return d.key; })
-        .y(function (d) { return d.value; });
+        .x(d3.scaleBand()
+          .domain(neighborhoodGroup.all().map(function (d) { return d.key; })));
 
   //console.log(neighborhoodGroup.top(10))
   myNeighborhoodChart.onMouseOver(function (d) {
@@ -414,27 +632,31 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     update();
   });
 
-  var myCrimeTypeChart = brushedBarChart()
+
+  var myCrimeTypeChart = mouseonBarChart()
         .width(400)
         .height(300)
         .dimension(crimeTypeDim)
         .group(crimeTypeGroup)
-        .x(function (d) { return d.key; })
-        .y(function (d) { return d.value; });
+        .x(d3.scaleBand()
+          .domain(crimeTypeGroup.all().map(function (d) { return d.key; })));
+        //.y(function (d) { return d.value; });
 
-  myCrimeTypeChart.onBrushed(function (selected) {
-      crimeTypeDim.filter(selected);
-      console.log(crimeTypeDim.filter(selected))
-      update();
-    });
+  myCrimeTypeChart.onMouseOver(function (d) {
+    crimeTypeDim.filter(d.key);
+    update();
+  }).onMouseOut(function (d) {
+    crimeTypeDim.filterAll();
+    update();
+  });
 
  var myDateChart = brushedBarChart()
         .width(500)
         .height(300)
         .dimension(date)
         .group(dateGroup)
-        .x(function (d) { return d.key; })
-        .y(function (d) { return d.value; });
+        .x(d3.scaleTime()
+          .domain([new Date(2014, 0, 1), new Date(2014,11, 31)]));
   
   myDateChart.onBrushed(function (selected) {
     date.filter(selected);
@@ -446,13 +668,43 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
         .height(300)
         .dimension(hourDim)
         .group(hourGroup)
-        .x(function (d) { return d.key; })
-        .y(function (d) { return d.value; });
+        .x(d3.scaleLinear()
+          .domain([0, 24]));
 
-  myHourChart.onBrushed(function (selected) {
-    hourDim.filter(selected);
+  myHourChart.onBrushed(function (selection) {
+    hourDim.filter(selection);
     update();
   });
+
+
+
+  var chartmap = LahoreCloroplethByTown()
+  .width(660)
+  .height(400)
+
+  // What attribute for the color values
+  .color(function (d) { return d.value; });
+
+// d3.csv("1_Revenues.csv",
+//   preprocess,
+//   function (err, data) {
+//     d3.select("#maps")      
+//       .datum(data)
+//       .call(chartmap);
+
+//   }
+// );
+    
+// function preprocess (d) {
+//   // Convert the state name to ansi code;
+//   var state = stateCodes[d["Name"].slice(0,2)];
+//   if (state===undefined || d.Year4!=="2008" ) { //only keep 2008
+//     return;
+//   }
+//   d.id = state;
+//   d.value = +d["Total Revenue"];
+//   return d;
+// }
 
   //render the charts
 
