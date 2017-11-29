@@ -152,34 +152,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
           .extent([[0,0], [width, innerHeight]])
           .on("brush", brushed))
 
-
-    //     // Dark arts of ugly hackery ahead 
-    // function brushmove() { 
-    //     // Get brush extent vals
-    //     var s = brush.extent(), lower = s[0], upper = s[1];
-    //     // Select bar rects and adjust opacity
-    //     gEnter.selectAll("rect")
-    //         .style("opacity", function(d) {
-    //             // Get data value keys and scale them
-    //             var k = xScale(d.key) + barPadding * xScale.rangeBand();
-    //             // If d.key is within extent adjust opacity
-    //             return lower <= k && k <= upper ? "1" : ".2";  
-    //          });
-        
-    //     // Calculate pseudo extent from .range() and .rangeBand()
-    //     var leftEdge = xScale.range(), width = xScale.rangeBand(); 
-    //     for (var _l=0; lower > (leftEdge[_l] + width); _l++) {};
-    //     for (var _u=0; upper > (leftEdge[_u] + width); _u++) {};
-    //     // Filter crossfilter by the pseudo extent
-    //     filt = byScr.filterRange([ xScale.domain()[_l], xScale.domain()[_u] ])
-    //     // Render filtered hospital plots
-    //     update();
-    //     // .selectAll("g.hospital").remove();
-    //     // _mapChart.selectAll("g.hospital").transition(); 
-    //     // _mapChart.select("g.hospital").attr("d", plotHospitals(filt))
-
-    // } // End brushmove
-
       });
 
     }
@@ -196,14 +168,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       onBrushed(selection);
       //update();
     }
-
-    // function X(d) {
-    //   return xScale(xValue(d));
-    // }
-
-    // function Y(d) {
-    //   return yScale(yValue(d));
-    // }
 
     chart.margin = function (_) {
       if (!arguments.length) return margin;
@@ -407,167 +371,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
 
 
-
-  function LahoreCloroplethByTown() {
-
-    var margin = {top: 20, right: 20, bottom: 20, left: 20},
-    width = 960,
-    height = 600,
-    innerWidth = width - margin.left - margin.right,
-    innerHeight = height - margin.top - margin.bottom,
-    color = function(d) { return d.value; },
-    //id = function(d) { return d.id; },
-    pak = null,
-    updateDomain = true,
-    path = d3.geoPath(),
-    colorScale = d3.scaleThreshold()
-      .range(d3.schemeBlues[9]);
-    // dicValues = d3.map();
-
-    function update(sel, data) {
-    // Select the svg element, if it exists.
-    var svg = d3.select(sel).selectAll("svg").data([data]);
-
-    // Otherwise, create the skeletal chart.
-    var svgEnter = svg.enter().append("svg");
-    var gEnter = svgEnter.append("g");
-    gEnter.append("g").attr("class", "states");
-    gEnter.append("path").attr("class", "state-borders");
-    
-    // Update the outer dimensions.
-    svg.merge(svgEnter).attr("width", width)
-      .attr("height", height);
-
-    innerWidth = width - margin.left - margin.right;
-    innerHeight = height - margin.top - margin.bottom;
-
-    // Update the inner dimensions.
-    var g = svg.merge(svgEnter).select("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top +
-          "), scale("+ Math.min(innerWidth/960, innerHeight/600) + ")");
-
-    if (updateDomain) {
-      // this a threshold scale with 9 steps, so the domain needs to be 9 steps
-      //
-      var domain = d3.extent(data.map(color));
-      colorScale.domain(d3.range(domain[0], domain[1], (domain[1]-domain[0])/9));
-
-      // Draw the shapes
-    var states = g.select(".states")
-      .selectAll("path")
-      .data(topojson.feature(pak, pak.objects.states).features);
-
-    states
-      .enter()
-        .append("path")
-      .merge(states)
-        .attr("d", path)
-        .style("fill", "white"); //default value
-
-    // var statesValues = g.select(".states")
-    //   .selectAll("path")
-    //   .data(data, id);
-
-    // statesValues
-    //   .style("fill", function (d) {
-    //     return colorScale(color(d));
-    //   })
-    //   .on("mouseenter", function (d) {
-    //     console.log(color(d));
-    //     console.log(d);
-    //   });
-
-
-    // g.select(".state-borders")
-    //   .attr("d", path(topojson.mesh(usShapes, usShapes.objects.states, function(a, b) { return a !== b; })));
-
-
-  }
-
-  function chart(selection) {
-    selection.each(function (data) {
-      var sel = this;
-      if (usShapes===null) {
-        // If we don't have the geo shapes, load them
-        d3.json("lahore_towns_topojson.json", function(error, _pak) {
-          if (error) throw error;
-          usShapes = _pak;
-
-          update(sel, data);
-        });
-      } else {
-
-        // Do we already have the geo shapes? then just draw
-        update(sel, data);
-      }
-    });
-
-  }
-
-  chart.margin = function(_) {
-    if (!arguments.length) return margin;
-    margin = _;
-    return chart;
-  };
-
-  chart.width = function(_) {
-    if (!arguments.length) return width;
-    width = _;
-    return chart;
-  };
-
-  chart.height = function(_) {
-    if (!arguments.length) return height;
-    height = _;
-    return chart;
-  };
-
-  chart.id = function(_) {
-    if (!arguments.length) return id;
-    id = _;
-    return chart;
-  };
-
-  chart.color = function(_) {
-    if (!arguments.length) return color;
-    color = _;
-    return chart;
-  };
-
-  chart.colorScale = function(_) {
-    if (!arguments.length) return colorScale;
-    colorScale = _;
-    return chart;
-  };
-
-  chart.updateDomain = function(_) {
-    if (!arguments.length) return updateDomain;
-    updateDomain = _;
-    return chart;
-  };
-
-
-  return chart;
-}
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
       var mapWidth = 550;
       var mapHeight = 550;
 
@@ -578,41 +381,98 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
       .attr('height', mapHeight);
 
       var g = svg.append("g")
+
+      // D3 Projection
+      var projection = d3.geoMercator()
+           .translate([mapWidth/2, mapHeight/2])    // translate to center of screen
+           .scale([1000]); 
       
-      var projection = d3.geoMercator();
+      //var projection = d3.geoMercator();
 
       var path = d3.geoPath()
         .projection(projection);
+
+        var color = d3.scaleLinear()
+        .range(["rgb(213,222,217)","rgb(69,173,168)","rgb(84,36,55)","rgb(217,91,67)"]);
       
-      d3.json("lahore_towns_topojson.json", function(err, pak) {
-        //console.log(pak.objects.lahore_towns_geojson)
+      d3.json("lahore_towns_geojson.json", function(err, json) {
+        //console.log(topojson.feature(json, json.objects.lahore_towns_geojson))
+        //neighborhoods = json.features
 
-        var neighbourhoods = topojson.feature(pak, pak.objects.lahore_towns_geojson); 
+         //var neighbourhoods = geojson.feature(pak, pak.objects.lahore_towns_geojson); 
         
-        // set default projection values 
-        projection
-            .scale(1)
-            .translate([0, 0]);
+        //creates bounding box and helps with projection and scaling
+        // var b = path.bounds(json.features),
+        //     s = .95 / Math.max((b[1][0] - b[0][0]) / mapWidth, (b[1][1] - b[0][1]) / mapHeight),
+        //     t = [(mapWidth - s * (b[1][0] + b[0][0])) / 2, (mapHeight - s * (b[1][1] + b[0][1])) / 2];
         
-        // creates bounding box and helps with projection and scaling
-        var b = path.bounds(neighbourhoods),
-            s = .95 / Math.max((b[1][0] - b[0][0]) / mapWidth, (b[1][1] - b[0][1]) / mapHeight),
-            t = [(mapWidth - s * (b[1][0] + b[0][0])) / 2, (mapHeight - s * (b[1][1] + b[0][1])) / 2];
-        
-        // set project with bounding box data
-        projection
-            .scale(s)
-            .translate(t);
+        // // set project with bounding box data
+        // projection
+        //     .scale(s)
+        //     .translate(t);
 
-        svg.append("g")
-        .attr("class", "districts")
-      .selectAll("path")
-        .data(topojson.feature(pak, pak.objects.lahore_towns_geojson).features)
-      .enter().append("path")
-        .attr("d", path)
-        .style("fill", "white")
-        .style("stroke", "black");
-      })
+      //   svg.append("g")
+      //   .attr("class", "districts")
+      // .selectAll("path")
+      //   .data(topojson.feature(pak, pak.objects.lahore_towns_geojson).features)
+      // .enter().append("path")
+      //   .attr("d", path)
+      //   .style("fill", "white")
+      //   .style("stroke", "black");
+
+                // Loop through each state data value in the .csv file
+          neighborhood_data = neighborhoodGroup.all()
+        for (var i = 0; i < neighborhood_data.length; i++) {
+
+          // Grab Neighborhood Name
+          var dataNeighborhood = neighborhood_data[i].key;
+          //console.log(dataNeighborhood)
+          // Grab neighborhood crime value 
+          var dataValue = neighborhood_data[i].value;
+          //console.log(json.features)
+
+          // Find the corresponding state inside the GeoJSON
+          for (var j = 0; j < json.features.length; j++)  {
+            var jsonNeighborhood = json.features[j].properties.Name;
+            //console.log(json.features[j].properties)
+            if (dataNeighborhood == jsonNeighborhood) {
+
+            // Copy the data value into the JSON
+            //console.log(json.features[j].properties.visited)
+            json.features[j].properties["visited"] = dataValue; 
+
+
+            // Stop looking through the JSON
+            break;
+            }
+          }
+        }
+            
+        // Bind the data to the SVG and create one path per GeoJSON feature
+        //console.log(json.features)
+        svg.selectAll("path")
+          .data(json.features)
+          .enter()
+          .append("path")
+          .attr("d", path)
+          .style("stroke", "#fff")
+          .style("stroke-width", "1")
+          .style("fill", function(d) {
+
+          // Get data value
+          var value = d.properties.visited;
+          console.log(value)
+
+          if (value) {
+          //If value exists…
+          return color(value);
+
+          } else {
+          //If value is undefined…
+          return "rgb(213,222,217)";
+          }
+        });
+      });
 
 
   // Make charts
@@ -675,36 +535,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     hourDim.filter(selection);
     update();
   });
-
-
-
-  var chartmap = LahoreCloroplethByTown()
-  .width(660)
-  .height(400)
-
-  // What attribute for the color values
-  .color(function (d) { return d.value; });
-
-// d3.csv("1_Revenues.csv",
-//   preprocess,
-//   function (err, data) {
-//     d3.select("#maps")      
-//       .datum(data)
-//       .call(chartmap);
-
-//   }
-// );
-    
-// function preprocess (d) {
-//   // Convert the state name to ansi code;
-//   var state = stateCodes[d["Name"].slice(0,2)];
-//   if (state===undefined || d.Year4!=="2008" ) { //only keep 2008
-//     return;
-//   }
-//   d.id = state;
-//   d.value = +d["Total Revenue"];
-//   return d;
-// }
 
   //render the charts
 
@@ -774,297 +604,3 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   //   renderAll();
   // };
 });
-
-
-  // function crimeList(div) {
-  //   var crimeByDate = nestByDate.entries(date.top(40));
-  //   console.log(crimeByDate)
-   
-  //   div.each(function() {
-  //     var date = d3.select(this).selectAll(".date")
-  //         .data(crimeByDate, function(d) {return d.key});
-  //         //console.log(date)
-
-  //   date.exit().remove();
-
-  //     date.enter().append("div")
-  //         .attr("class", "date")
-  //       .append("div")
-  //         .attr("class", "day")
-  //         .text(function(d) {return formatDate(d.values[0].date)})
-  //       .merge(date);
-  //       console.log(date)
-
-  //     var crime = date.order().selectAll(".crime")
-  //         .data(function(d) {return d.values}, function(d) {return d.index});
-          
-  //         crime.exit().remove();
-
-  //     var crimeEnter = crime.enter().append("div")
-  //         .attr("class", "crime");
-
-  //     crimeEnter.append("div")
-  //         .attr("class", "time");
-  //         //.text(function(d) {return formatTime(d.date)});
-
-  //     crimeEnter.append("div")
-  //         .attr("class", "neighborhood")
-  //         .text(function(d) {return d["Neighborhood"]});
-
-  //     crimeEnter.append("div")
-  //         .attr("class", "crimeType")
-  //         .text(function(d) {return d["Crime Type"]});
-
-  //     crimeEnter.merge(crime);
-
-  //     crime.order();
-  //   });
-  // }
-
-  // a bar chart function that uses the same properties for each of the chart
-  // on which a cross filter is applied
-  // source: https://github.com/square/crossfilter/blob/gh-pages/index.html
-//  function barChart() {
-//     if (!barChart.id) barChart.id = 0;
-
-//     let margin = { top: 10, right: 13, bottom: 20, left: 10 };
-//     let x;
-//     let y = d3.scaleLinear().range([200, 0]);
-//     const id = barChart.id++;
-//     const xaxis = d3.axisBottom();
-//     const yaxis = d3.axisLeft();
-//     const brush = d3.brushX();
-//     let brushDirty;
-//     let dimension;
-//     let group;
-//     let round;
-//     let gBrush;
-//     var xTickRot;
-    
-
-//     function chart(div) {
-
-//       const width = x.range()[1];
-//       const height = y.range()[0];
-
-//       brush.extent([[0, 0], [width, height]]);
-//       //set y domain to be the topmost value of a particular dataset
-//       y.domain([0, group.top(1)[0].value]);
-
-//       div.each(function () {
-//         const div = d3.select(this);
-//         let g = div.select('g');
-
-//         // Create the skeletal chart.
-//         if (g.empty()) {
-//           div.select('.title').append('a')
-//             .attr('href', `javascript:reset(${id})`)
-//             .attr('class', 'reset')
-//             .text(' reset')
-//             .style('display', 'none');
-
-//           g = div.append('svg')
-//             .attr('width', width + margin.left + margin.right)
-//             .attr('height', height*1.5 + margin.top + margin.bottom)
-//             .append('g')
-//               .attr('transform', `translate(${margin.left},${margin.top})`);
-
-//           g.append('clipPath')
-//             .attr('id', `clip-${id}`)
-//             .append('rect')
-//               .attr('width', width)
-//               .attr('height', height);
-
-//           g.selectAll('.bar')
-//             .data(['background', 'foreground'])
-//             .enter().append('path')
-//               .attr('class', d => `${d} bar`)
-//               .datum(group.all());
-
-//           g.selectAll('.foreground.bar')
-//             .attr('clip-path', `url(#clip-${id})`);
-
-//           g.append('g')
-//             .attr('class', 'xaxis')
-//             .attr('transform', `translate(0,${height})`)
-//             .call(xaxis)
-//             .selectAll("text")
-//              .attr("dx", "-45")
-//              .attr("dy", "-10")
-//              .attr("transform", "rotate(-90)");
-//              //.attr("transform", "rotate(-90)" );
-
-//           // Initialize the brush component with pretty resize handles.
-//           gBrush = g.append('g')
-//             .attr('class', 'brush')
-//             .call(brush);
-
-//           gBrush.selectAll('.handle--custom')
-//             .data([{ type: 'w' }, { type: 'e' }])
-//             .enter().append('path')
-//               .attr('class', 'brush-handle')
-//               .attr('cursor', 'ew-resize')
-//               .attr('d', resizePath)
-//               .style('display', 'none');
-//         }
-
-//         // Only redraw the brush if set externally.
-//         if (brushDirty !== false) {
-//           const filterVal = brushDirty;
-//           brushDirty = false;
-
-//           div.select('.title a').style('display', d3.brushSelection(div) ? null : 'none');
-
-//           if (!filterVal) {
-//             g.call(brush);
-
-//             g.selectAll(`#clip-${id} rect`)
-//               .attr('x', 0)
-//               .attr('width', width);
-
-//             g.selectAll('.brush-handle').style('display', 'none');
-//             renderAll();
-//           } else {
-//             const range = filterVal.map(x);
-//             brush.move(gBrush, range);
-//           }
-//         }
-
-//         g.selectAll('.bar').attr('d', barPath);
-//       });
-
-//       function barPath(groups) {
-//         const path = [];
-//         let i = -1;
-//         const n = groups.length;
-//         let d;
-//         while (++i < n) {
-//           d = groups[i];
-//           path.push('M', x(d.key), ',', height, 'V', y(d.value), 'h9V', height);
-//         }
-//         return path.join('');
-//       }
-
-//       function resizePath(d) {
-//         const e = +(d.type === 'e');
-//         const x = e ? 1 : -1;
-//         const y = height / 3;
-//         return `M${0.5 * x},${y}A6,6 0 0 ${e} ${6.5 * x},${y + 6}V${2 * y - 6}A6,6 0 0 ${e} ${0.5 * x},${2 * y}ZM${2.5 * x},${y + 8}V${2 * y - 8}M${4.5 * x},${y + 8}V${2 * y - 8}`;
-//       }
-//     }
-
-//     brush.on('start.chart', function () {
-//       const div = d3.select(this.parentNode.parentNode.parentNode);
-//       div.select('.title a').style('display', null);
-//     });
-
-//     brush.on('brush.chart', function () {
-//       const g = d3.select(this.parentNode);
-//       const brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
-//       const xRange = x && x.range(); // attempt to read range from x scale
-//       let activeRange = brushRange || xRange; // default to x range if no brush range available
-
-//       const hasRange = activeRange &&
-//         activeRange.length === 2 &&
-//         !isNaN(activeRange[0]) &&
-//         !isNaN(activeRange[1]);
-
-//       if (!hasRange) return; // quit early if we don't have a valid range
-
-//       // calculate current brush extents using x scale
-//       let extents = activeRange.map(x.invert);
-
-//       // if rounding fn supplied, then snap to rounded extents
-//       // and move brush rect to reflect rounded range bounds if it was set by user interaction
-//       if (round) {
-//         extents = extents.map(round);
-//         activeRange = extents.map(x);
-
-//         if (
-//           d3.event.sourceEvent &&
-//           d3.event.sourceEvent.type === 'mousemove'
-//         ) {
-//           d3.select(this).call(brush.move, activeRange);
-//         }
-//       }
-
-//       // move brush handles to start and end of range
-//       g.selectAll('.brush-handle')
-//         .style('display', null)
-//         .attr('transform', (d, i) => `translate(${activeRange[i]}, 0)`);
-
-//       // resize sliding window to reflect updated range
-//       g.select(`#clip-${id} rect`)
-//         .attr('x', activeRange[0])
-//         .attr('width', activeRange[1] - activeRange[0]);
-
-//       // filter the active dimension to the range extents
-//       dimension.filterRange(extents);
-
-//       // re-render the other charts accordingly
-//       renderAll();
-//     });
-
-//     brush.on('end.chart', function () {
-//       // reset corresponding filter if the brush selection was cleared
-//       // (e.g. user "clicked off" the active range)
-//       if (!d3.brushSelection(this)) {
-//         reset(id);
-//       }
-//     });
-
-//     chart.margin = function (_) {
-//       if (!arguments.length) return margin;
-//       margin = _;
-//       return chart;
-//     };
-
-//     chart.x = function (_) {
-//       if (!arguments.length) return x;
-//       x = _;
-//       xaxis.scale(x);
-//       //axis.attr("transform", "rotate(-20)" );
-//       return chart;
-//     };
-
-//     chart.y = function (_) {
-//       if (!arguments.length) return y;
-//       y = _;
-//       return chart;
-//     };
-
-//     chart.dimension = function (_) {
-//       if (!arguments.length) return dimension;
-//       dimension = _;
-//       return chart;
-//     };
-
-//     chart.filter = _ => {
-//       if (!_) dimension.filterAll();
-//       brushDirty = _;
-//       return chart;
-//     };
-
-//     chart.group = function (_) {
-//       if (!arguments.length) return group;
-//       group = _;
-//       return chart;
-//     };
-    
-//     chart.xTickRot = function (_) {
-//       if (!arguments.length) return xTickRot;
-//       xTickRot = _;
-//       return chart;
-//     };
-
-//     chart.round = function (_) {
-//       if (!arguments.length) return round;
-//       round = _;
-//       return chart;
-//     };
-
-//     chart.gBrush = () => gBrush;
-
-//     return chart;
-//   }
-// });
