@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Lahore Crime Rate Visualization Dashboard</title>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
 
   
   <link rel="stylesheet" type="text/css" href="./styles.css"/>
@@ -18,7 +18,7 @@
   		<div id="crime-type-chart" class="chart">
     		<div class="title">Crime Type</div>
   		</div>
-  		<div id="month-chart" class="chart">
+  		<div id="date-chart" class="chart">
     		<div class="title">Date</div>
   		</div>
   		<div id="hour-chart" class="chart">
@@ -31,7 +31,7 @@
 
 	<div class = "map">
 		<div id = "pakistanMap">
-			<div class="title">Map of Pakistan's Districts</div>
+			<div class="title">Map of Lahore's Towns</div>
 		</div>
 	</div>
 
@@ -39,6 +39,13 @@
 	<script type="text/javascript" src="./d3/crossfilter.js"></script>
 
 	<script type="text/javascript" src="./script.js"></script>
+  <!-- JQuery + Bootstrap JS cdn -->
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 </body>
 

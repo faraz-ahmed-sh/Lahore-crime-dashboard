@@ -1,12 +1,38 @@
-#charts {
-    padding: 10px 0;
-  }
 
-  .chart {
+
+
+.bar {
+  fill: red;
+}
+#neighborhood-chart .bar:hover {
+  mode: false;
+  fill: steelblue;
+}
+
+/*.hover: { mode: false }
+.x.axis path {
+  display: none;
+}*/
+
+.chart {
     display: inline-block;
     height: 151px;
     margin-bottom: 20px;
   }
+
+.map {
+    display: inline-block;
+    height: 151px;
+    margin-bottom: 20px;
+  }
+
+
+
+/*#charts {
+    padding: 10px 0;
+  }
+
+  
 
   .reset {
     padding-left: 1em;
@@ -25,4 +51,4 @@
   .brush-handle {
     fill: #eee;
     stroke: #666;
-  }
+  }*/
