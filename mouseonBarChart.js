@@ -17,6 +17,7 @@
 
         // select the svg element if it exists
         var svg = d3.select(this).selectAll("svg").data([data]);
+        //console.log(data)
 
         // otherwise, create the skeletal chart
 

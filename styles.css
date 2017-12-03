@@ -27,6 +27,43 @@ path {
   fill: grey;
 }
 
+/* On mouse hover, lighten state color */
+path:hover {
+  fill-opacity: .7;
+}
+
+/* Style for Custom Tooltip */
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 70px;                  
+  height: 40px;                 
+  padding: 2px;             
+  font: 12px sans-serif;        
+  background: white;   
+  border: 0px;      
+  border-radius: 10px;           
+  pointer-events: none;         
+}
+
+.q0-9 { fill:#b2182b; }
+  .q1-9 { fill:#d6604d; }
+  .q2-9 { fill:#f4a582; }
+  .q3-9 { fill:#fddbc7; }
+  .q4-9 { fill:#f7f7f7; }
+  .q5-9 { fill:#d1e5f0; }
+  .q6-9 { fill:#92c5de; }
+  .q7-9 { fill:#4393c3; }
+  .q8-9 { fill:#2166ac; }
+
+.map_neighbourhood {
+            fill: #1f77b4;
+        }
+.map_neighbourhood:hover {
+    fill: #636363;
+    cursor: pointer;
+}
+
 /*.map {
     display: inline-block;
     height: 151px;
