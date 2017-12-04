@@ -1,10 +1,10 @@
 
-.chart {
+/*.chart {
     display: inline-block;
     height: 151px;
     margin-bottom: 20px;
   }
-
+*/
 .bar {
   fill: red;
 }
@@ -14,13 +14,8 @@
   transition: fill-opacity 250ms linear;
 }
 
-.map {
-    display: inline-block;
-    height: 151px;
-    margin-bottom: 20px;
-  }
 
-#hour-chart .bar {
+/*#hour-chart .bar {
   fill-opacity: 0.2;
   transition: fill-opacity 250ms linear;
 }
@@ -28,23 +23,12 @@
 #date-chart .bar {
   fill-opacity: 0.2;
   transition: fill-opacity 250ms linear;
-}
-
-#hour-chart bar.active {
-  stroke: #f00;
-}
-
-/*#neighborhood-chart .bar:hover {
-  mode: false;
-  fill: steelblue;
-}
-*/
-/*.hover: { mode: false }
-.x.axis path {
-  display: none;
 }*/
 
-
+/*#hour-chart bar:active {
+  stroke: #f00;
+}
+*/
 
 .brush-handle {
     fill: #eee;
@@ -77,15 +61,15 @@ div.tooltip {
   pointer-events: none;         
 }
 
-.q0-9 { fill:#b2182b; }
-.q1-9 { fill:#d6604d; }
-.q2-9 { fill:#f4a582; }
-.q3-9 { fill:#fddbc7; }
-.q4-9 { fill:#f7f7f7; }
-.q5-9 { fill:#d1e5f0; }
-.q6-9 { fill:#92c5de; }
-.q7-9 { fill:#4393c3; }
-.q8-9 { fill:#2166ac; }
+.q8-9 { fill:#b2182b; }
+  .q7-9 { fill:#d6604d; }
+  .q6-9 { fill:#f4a582; }
+  .q5-9 { fill:#fddbc7; }
+  .q4-9 { fill:#f7f7f7; }
+  .q3-9 { fill:#d1e5f0; }
+  .q2-9 { fill:#92c5de; }
+  .q1-9 { fill:#4393c3; }
+  .q0-9 { fill:#2166ac; }
 
 /*.map {
     display: inline-block;
@@ -94,28 +78,15 @@ div.tooltip {
   }
 */
 
+/*#map {
+  float: center;
+}
 
-/*#charts {
-    padding: 10px 0;
-  }
+#map-legend{
+  text-align: center; 
+}
 
-  
+#title {
+    right: 40px;
+}*/
 
-  .reset {
-    padding-left: 1em;
-    font-size: smaller;
-    color: #ccc;
-  }
-
-  .background.bar {
-    fill: #ccc;
-  }
-
-  .foreground.bar {
-    fill: red;
-  }
-
-  .brush-handle {
-    fill: #eee;
-    stroke: #666;
-  }*/

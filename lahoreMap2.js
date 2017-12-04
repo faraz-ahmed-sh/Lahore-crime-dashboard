@@ -7,8 +7,6 @@ function lahoreMap2(change, neighborhood) {
 
       	svg.attr("width", mapWidth)
         .attr("height", mapHeight);
-
-
         var projection = d3.geoMercator()
         //.translate([mapWidth/2, mapHeight/2])    // translate to center of screen
         .scale([40000])

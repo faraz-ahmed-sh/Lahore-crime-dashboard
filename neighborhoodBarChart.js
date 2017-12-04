@@ -1,5 +1,5 @@
 //make a bar chart for the Neighborhood with mouseover and mouseout
-  function mouseonBarChart() {
+  function nBarChart() {
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 300,
     height = 300,
@@ -8,9 +8,7 @@
     //xValue = function(d) { return d[0]; },
     //yValue = function(d) { return d[1]; },
     xScale;
-    yScale = d3.scaleLinear(),
-    onMouseOver = function () { },
-    onMouseOut = function () { };
+    yScale = d3.scaleLinear();
 
     function chart(selection) {
       selection.each(function (data) {
@@ -69,9 +67,7 @@
 
           //create space between bars
           .attr("width", (width-(width/data.length)) / (data.length+2))
-          .attr("height", function (d) { return innerHeight - yScale(d.value); })
-          .on("mouseover", onMouseOver)
-          .on("mouseout", onMouseOut);
+          .attr("height", function (d) { return innerHeight - yScale(d.value); });
           //console.log(.on("mouseover", onMouseOver))
         bars.exit().remove();
       });
@@ -109,18 +105,6 @@
       return chart;
     };
 
-
-    chart.onMouseOver = function (_) {
-      if (!arguments.length) return onMouseOver;
-      onMouseOver = _;
-      return chart;
-    };
-
-    chart.onMouseOut = function (_) {
-      if (!arguments.length) return onMouseOut;
-      onMouseOut = _;
-      return chart;
-    };
 
     return chart;
   }

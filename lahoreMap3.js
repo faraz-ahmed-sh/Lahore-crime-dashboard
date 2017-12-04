@@ -8,18 +8,33 @@ function Choropleth(json) {
       chart = this;
       chart.json = json;
 
-      chart.svg = d3.select("#pakistanMap").append("svg")
+      chart.svg = d3.select("#pakistanMap").attr("align","center").append("svg")
         .attr("width", mapWidth)
         .attr("height", mapHeight)
         .append("g")
         .attr("transform", function(){ return "translate(" + margin.left + "," + margin.top + ")" });
 
-      chart.minimumColor = "#DCFF5B"; 
-      chart.maximumColor = "#E85138";
+      // chart.minimumColor = "#DCFF5B"; 
+      // chart.maximumColor = "#E85138";
 
-      chart.colorScale = d3.scaleLinear()
-        .domain([0,7000])
-        .range([chart.minimumColor, chart.maximumColor]);
+      
+
+      chart.colorScale = d3.scaleQuantize()
+    .domain([0, 7000])
+    .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
+
+        //console.log(chart.colorScale.range())
+      chart.legend = d3.select("#map-legend").
+        append("svg:svg").
+        attr("width", 160).
+        attr("height", 10)
+        for (var i = 0; i <= 7; i++) {
+          chart.legend.append("svg:rect").
+          attr("x", i*20).
+          attr("height", 10).
+          attr("width", 20).
+          attr("class", "q" + i + "-9 ");//color
+        };
 
       chart.projection = d3.geoMercator()
         .scale([45000])
@@ -77,31 +92,41 @@ Choropleth.prototype.update = function (filteredData) {
       };
 
       chart.map
-        .style("fill", function(d) { 
+        .attr("class", function(d) { 
+
+          //console.log(chart.colorScale(d.properties.visited))
+
             return chart.colorScale(d.properties.visited);
+
           })
-      // .on("mouseover", mouseover) 
-      // .on("mouseout", mouseout)
+      .on("mouseover", mouseover) 
+      .on("mouseout", mouseout)
+      //console.log(chart.colorScale(d.properties.visited))
       // .on("click", clicked)
-};        
+
+
+      function mouseover(d) {     
+        chart.div.transition()        
+           .duration(200)      
+           .style("opacity", .9);
+          chart.div.text(d.properties.Name + ": " + d.properties.visited) // remove suffix id from name
+          .style("left", (d3.event.pageX) + "px")     
+           .style("top", (d3.event.pageY - 28) + "px");  
+      }
+      function mouseout(d) {     
+          //mapLabel.text("")  // remove out name
+          chart.div.transition()        
+           .duration(500)      
+         .style("opacity", 0); 
+       }
+       
 // d3.json("lahore_towns_geojson2.json", function(err, json) {
 
 // Bind the data to the SVG and create one path per GeoJSON feature
 
-// function mouseover(d) {     
-//       div.transition()        
-//          .duration(200)      
-//          .style("opacity", .9);
-//         div.text(d.properties.Name + ": " + d.properties.visited) // remove suffix id from name
-//         .style("left", (d3.event.pageX) + "px")     
-//          .style("top", (d3.event.pageY - 28) + "px");  
-
-//       }
-// function mouseout(d) {     
-//   //mapLabel.text("")  // remove out name
-//   div.transition()        
-//    .duration(500)      
-//    .style("opacity", 0); 
+// 
 // }
+
+}; 
   
 	    

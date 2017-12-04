@@ -11,11 +11,11 @@ var parseTime4 = d3.timeParse("%S");
 var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
 
 
-var myDateChart = brushedBarChart()
-      .width(500)
+var myDateChart = brushedBarChart2()
+      .width(300)
       .height(300)
       .x(d3.scaleTime()
-        .domain([new Date(2014, 0, 1), new Date(2014,11, 31)]));
+        .domain([new Date(2014, 0, 1), new Date(2014,5, 31)]));
 
 var myHourChart = brushedBarChart()
       .width(300)
@@ -72,9 +72,10 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   var all = ndx.groupAll();
 
     //Make charts and activate brushes/mouseovers
-    myDateChart.onBrushed(function (selected) {
-      date.filter(selected);
+    myDateChart.onBrushed(function (select) {
+      date.filter(select);
       update();
+      map.update(neighborhoodGroup.all())
     });
 
     myHourChart.onBrushed(function (selected) {
@@ -84,23 +85,25 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
     });
    
-   var myNeighborhoodChart = mouseonBarChart()
+   var myNeighborhoodChart = nBarChart()
           .width(300)
           .x(d3.scaleBand()
             .domain(neighborhoodGroup.all().map(function (d) { return d.key; })));
 
-    myNeighborhoodChart.onMouseOver(function (d) {
-      neighborhoodDim.filter(d.key);
-      //console.log(neighborhoodDim.filter(d.key))
-      update();
-    }).onMouseOut(function (d) {
-      neighborhoodDim.filterAll()
-      update();
-    });
+    // myNeighborhoodChart.onMouseOver(function (d) {
+    //   neighborhoodDim.filter(d.key);
+    //   //console.log(neighborhoodDim.filter(d.key))
+    //   update();
+    //   map.update(neighborhoodGroup.all())
+    // }).onMouseOut(function (d) {
+    //   neighborhoodDim.filterAll()
+    //   update();
+    //   map.update(neighborhoodGroup.all())
+    // });
 
     
 var myCrimeTypeChart = mouseonBarChart()
-        .width(400)
+        .width(350)
         .height(300)
         .x(d3.scaleBand()
           .domain(crimeTypeGroup.all().map(function (d) { return d.key; })));
@@ -108,9 +111,11 @@ var myCrimeTypeChart = mouseonBarChart()
     myCrimeTypeChart.onMouseOver(function (d) {
       crimeTypeDim.filter(d.key);
       update();
+      map.update(neighborhoodGroup.all())
     }).onMouseOut(function (d) {
       crimeTypeDim.filterAll();
       update();
+      map.update(neighborhoodGroup.all())
     });
 
 
@@ -141,28 +146,6 @@ var myCrimeTypeChart = mouseonBarChart()
       .select(".x.axis")
       .selectAll(".tick text")
       .attr("transform", "rotate(-90)");
-
-      // svg.selectAll("path")
-      //   .style("fill", function(d, i, data) {
-      //         data = neighborhoodGroup.all()
-      //         //console.log(i)
-      //         // Get data value
-      //         all_features = map_data(data);
-      //        // console.log(all_features)
-      //         console.log(d)
-
-      //        var value = d.properties.visited;
-
-      //         if (value) {
-      //         //If value exists…
-      //         //console.log(color(i))
-      //         return color(i);
-
-      //         } else {
-      //         //If value is undefined…
-      //         return "rgb(213,222,217)";
-      //         }
-      //       });
 
       d3.select("#date-chart")
       .datum(dateGroup.all())
