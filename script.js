@@ -12,7 +12,7 @@ var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
 
 
 var myDateChart = brushedBarChart()
-      .width(700)
+      .width(500)
       .height(300)
       .x(d3.scaleTime()
         .domain([new Date(2014, 0, 1), new Date(2014,11, 31)]));

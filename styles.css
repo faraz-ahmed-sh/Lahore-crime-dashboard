@@ -14,9 +14,26 @@
   transition: fill-opacity 250ms linear;
 }
 
-.bar.active {
+.map {
+    display: inline-block;
+    height: 151px;
+    margin-bottom: 20px;
+  }
+
+#hour-chart .bar {
+  fill-opacity: 0.2;
+  transition: fill-opacity 250ms linear;
+}
+
+#date-chart .bar {
+  fill-opacity: 0.2;
+  transition: fill-opacity 250ms linear;
+}
+
+#hour-chart bar.active {
   stroke: #f00;
 }
+
 /*#neighborhood-chart .bar:hover {
   mode: false;
   fill: steelblue;

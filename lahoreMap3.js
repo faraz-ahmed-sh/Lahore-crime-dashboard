@@ -39,6 +39,8 @@ function Choropleth(change, json) {
             };
           
           chart.json = json
+            //return chart.json
+          
   };
 
   Choropleth.prototype.update2 = function () {
