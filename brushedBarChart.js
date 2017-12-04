@@ -21,26 +21,12 @@ function brushedBarChart() {
         var gEnter = svgEnter.append("g");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
-        gBrush = gEnter.append("g").attr("class", "brush");
+        //gBrush = gEnter.append("g").attr("class", "brush");
 
+        var brush = d3.brushX()
+        .extent([[0, 0], [width, height-50]])
+        .on("start brush end", brushed);
 
-        // style brush resize handle
-        // https://github.com/crossfilter/crossfilter/blob/gh-pages/index.html#L466
-        var brushResizePath = function(d) {
-            var e = +(d.type == "e"),
-                x = e ? 1 : -1,
-                y = height / 2;
-            return "M" + (.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
-        }
-
-        var handle = gBrush.selectAll(".handle--custom")
-          .data([{type: "w"}, {type: "e"}])
-          .enter().append("path")
-            .attr("class", "handle--custom")
-            .attr("stroke", "#000")
-            .attr("cursor", "ew-resize")
-            .attr("d", brushResizePath);
-        
         //gBrush.selectAll("rect").attr("height", height);
 
         innerWidth = width - margin.left - margin.right,
@@ -80,10 +66,29 @@ function brushedBarChart() {
         
         //bars.exit().remove();
 
-        g.select(".brush").call(d3.brushX()
-          .extent([[0,0], [innerWidth, innerHeight]])
-          .on("brush", brushed));
-        
+        var gBrush = gEnter.append("g")
+          .attr("class", "brush")
+          .call(brush);
+
+
+        // style brush resize handle
+        // https://github.com/crossfilter/crossfilter/blob/gh-pages/index.html#L466
+        var brushResizePath = function(d) {
+            var e = +(d.type == "e"),
+                x = e ? 1 : -1,
+                y = height / 2;
+            return "M" + (.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
+        }
+
+        var handle = gBrush.selectAll(".handle--custom")
+          .data([{type: "w"}, {type: "e"}])
+          .enter().append("path")
+            .attr("class", "handle--custom")
+            .attr("stroke", "#000")
+            .attr("cursor", "ew-resize")
+            .attr("d", brushResizePath);
+
+        gBrush.call(brush.move, [0, 0].map(xScale));
 
         function brushed() {
 

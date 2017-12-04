@@ -14,7 +14,7 @@
   transition: fill-opacity 250ms linear;
 }
 
-.bar .active {
+.bar.active {
   stroke: #f00;
 }
 /*#neighborhood-chart .bar:hover {
