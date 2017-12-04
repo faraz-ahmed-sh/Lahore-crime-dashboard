@@ -71,168 +71,6 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   var neighborhoodGroup = neighborhoodDim.group();
   var all = ndx.groupAll();
 
-
-     //  var mapWidth = 550;
-     //  var mapHeight = 550;
-
-     // //make a map of Lahore's towns
-     //  var svg = d3.select("#pakistanMap")
-     //  .append('svg') 
-     //  .attr('width', mapWidth)
-     //  .attr('height', mapHeight);
-
-     //  var g = svg.append("g")
-
-     //  var crimeById = d3.map(),
-     //      nameById = d3.map();
-
-     //    var quantize = d3.scaleQuantize()
-     //        .domain([-.02, .05])
-     //        .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
-
-     //  // // D3 Projection
-     //  var projection = d3.geoMercator()
-     //        //.translate([mapWidth/2, mapHeight/2])    // translate to center of screen
-     //        .scale([40000])
-     //       //.
-     //         .center([74.6, 31.5]) // set centre to further North
-     //     //.scale([mapWidth/(2*Math.PI)]) // scale to fit group width
-     //       .translate([465, 250]) // ensure centred in group
-
-     //    var minimumColor = "#DCFF5B", maximumColor = "#E85138";
-
-     //    var color = d3.scaleLinear()
-     //    .domain([2, 10])
-     //    .range([minimumColor, maximumColor]);
-
-     //    // var color = d3.scaleQuantize()
-     //    // .domain([0, 9000])
-     //    //   .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
-
-     //    // var projection = d3.geoMercator().fitSize([mapWidth, mapHeight], json);
-     //    // //console.log(projection)
-     //    var path = d3.geoPath().projection(projection);
-        
-     //    var div = d3.select("#pakistanMap")
-     //    .append("div")   
-     //    .attr("class", "tooltip")               
-     //    .style("opacity", 0);
-      
-     //    d3.json("lahore_towns_geojson2.json", function(err, json) {
-
-
-        // var b = path.bounds(neighborhoods[0]),
-        // s = 0.9 / Math.max(
-        //                (b[1][0] - b[0][0]) / mapWidth, 
-        //                (b[1][1] - b[0][1]) / mapHeight
-        //            );
-        // projection.scale(s); 
-        //  var neighbourhoods = geojson.feature(pak, pak.objects.lahore_towns_geojson); 
-        
-        //creates bounding box and helps with projection and scaling
-        // var b = path.bounds(json.features),
-        //     s = .95 / Math.max((b[1][0] - b[0][0]) / mapWidth, (b[1][1] - b[0][1]) / mapHeight),
-        //     t = [(mapWidth - s * (b[1][0] + b[0][0])) / 2, (mapHeight - s * (b[1][1] + b[0][1])) / 2];
-        
-     //    // // set project with bounding box data
-     //    // projection
-     //    //     .scale(s)
-     //    //     .translate(t);
-
-     //    // Loop through each state data value in the crossfilter dimension
-     //      function map_data(data) {
-
-     //        neighborhood_data = data;
-     //      for (var i = 0; i < neighborhood_data.length; i++) {
-
-     //      // Grab Neighborhood Name
-     //      var dataNeighborhood = neighborhood_data[i].key;
-     //      // Grab neighborhood crime value 
-     //      var dataValue = neighborhood_data[i].value;
-
-     //      // Find the corresponding state inside the GeoJSON
-     //      for (var j = 0; j < json.features.length; j++)  {
-     //        var jsonNeighborhood = json.features[j].properties.Name;
-            
-     //        if (dataNeighborhood == jsonNeighborhood) {
-
-     //          //crimeById.set(jsonNeighborhood, dataValue);
-     //        // Copy the data value into the JSON
-     //        //console.log(json.features[j].properties.visited)
-     //        json.features[j].properties["visited"] = dataValue; 
-     //        //console.log("---", dataValue)
-     //        // Stop looking through the JSON
-     //        break;
-     //        }
-            
-     //      }
-     //    };
-     //    //console.log(json.features)
-
-     //        return json.features
-        
-     //    //return json.features
-     //      };
-
-     //    d3.select("#neighborhood-chart")
-     //      .datum(neighborhoodGroup.all())
-     //      .call(myNeighborhoodChart)
-     //      .select(".x.axis")
-     //      .selectAll(".tick text")
-     //      .attr("transform", "rotate(-90)");
-            
-     //    // Bind the data to the SVG and create one path per GeoJSON feature
-     //    svg.append("g")
-     //      .attr("class", "map_neighborhood")
-     //      .selectAll("path")
-     //      .data(json.features)
-     //      .enter()
-     //      .append("path")
-     //      //.attr("class", function(d) { console.log(quantize(crimeById.get(d[1]))) ; })
-     //      .attr("d", path)
-     //      .style("stroke-width", "0.7")
-     //      .style("stroke", "black")
-     //      .on("mouseover", mouseover) 
-     //      .on("mouseout", mouseout)
-     //      .style("fill", function(d, i, data) {
-     //        data = neighborhoodGroup.all()
-     //       // //console.log(data)
-     //        all_features = map_data(data);
-     //       //console.log(all_features)
-     //       var value = d.properties.visited;
-
-     //      // Get data value
-     //      if (value) {
-     //      //If value exists…
-     //      //console.log(color(i))
-     //      return color(i);
-
-     //      } else {
-     //      //If value is undefined…
-     //      return "rgb(213,222,217)";
-     //      }
-     //    });
-
-
-
-  // });
-      // function mouseover(d) {     
-      //   div.transition()        
-      //      .duration(200)      
-      //      .style("opacity", .9);
-      //     div.text(d.properties.Name + ": " + d.properties.visited) // remove suffix id from name
-      //     .style("left", (d3.event.pageX) + "px")     
-      //      .style("top", (d3.event.pageY - 28) + "px");  
-
-      //   }
-      //   function mouseout(d) {     
-      //     //mapLabel.text("")  // remove out name
-      //     div.transition()        
-      //      .duration(500)      
-      //      .style("opacity", 0); 
-      //   }
-    
-
     //Make charts and activate brushes/mouseovers
     myDateChart.onBrushed(function (selected) {
       date.filter(selected);
@@ -242,6 +80,8 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
     myHourChart.onBrushed(function (selected) {
       hourDim.filter(selected);
       update();
+      map.update(neighborhoodGroup.all())
+
     });
    
    var myNeighborhoodChart = mouseonBarChart()
@@ -279,8 +119,8 @@ var myCrimeTypeChart = mouseonBarChart()
       .awaitAll(function (error, results) {
         if (error) { throw error; }
 
-        map = new Choropleth(neighborhoodGroup.all(),results[0]);
-        map.update2();
+        map = new Choropleth(results[0]);
+        map.update(neighborhoodGroup.all());
         //console.log(neighborhoodGroup.all())
       });
 
@@ -294,7 +134,6 @@ var myCrimeTypeChart = mouseonBarChart()
       .select(".x.axis")
       .selectAll(".tick text")
       .attr("transform", "rotate(-90)");
-
 
       d3.select("#crime-type-chart")
       .datum(crimeTypeGroup.all())
