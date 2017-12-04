@@ -28,6 +28,7 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
   if (error) throw error;
   var data = data.filter(filterCriteria);
 
+
   // filter the data for null values in d["Time"]
   function filterCriteria(d) {
       return (d.Date != "2014-05-15" && d.Date != "2014-11-12" && d.Date != "2014-04-23" && d.Date != "2014-02-25" && d.Date != "2014-01-01" && d.Date != "2014-08-18");
@@ -138,14 +139,14 @@ var myCrimeTypeChart = mouseonBarChart()
       .call(myNeighborhoodChart)
       .select(".x.axis")
       .selectAll(".tick text")
-      .attr("transform", "rotate(-90)");
+      .attr("transform", "rotate(-90) translate(-6,-10)");
 
       d3.select("#crime-type-chart")
       .datum(crimeTypeGroup.all())
       .call(myCrimeTypeChart)
       .select(".x.axis")
       .selectAll(".tick text")
-      .attr("transform", "rotate(-90)");
+      .attr("transform", "rotate(-90) translate(-6,-10)");
 
       d3.select("#date-chart")
       .datum(dateGroup.all())

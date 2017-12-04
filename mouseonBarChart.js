@@ -40,16 +40,16 @@
 
         //yScale = d3.scaleLinear();
 
-        xScale.range([0, innerWidth]);
-        //.domain(data.map(xValue));
+        xScale.range([0, innerWidth])
+        .domain(data.map(function (d) { return d.key; }));
   //    yScale.domain(neighborhoodCrimeCount.map(function(d) { return d.key; })).padding(0.1);
 
         yScale.range([innerHeight, 0])
         .domain([0, (d3.max(data, function(d) { return d.value; }))]);
 
-        // g.select(".x.axis")
-        //   .attr("transform", "translate(0," + (innerHeight) + ")")
-        //   .call(d3.axisBottom(xScale));
+        g.select(".x.axis")
+          .attr("transform", "translate(0," + (innerHeight) + ")")
+          .call(d3.axisBottom(xScale));
 
        g.select(".y.axis")
            //.attr("transform", "translate(0," + (margin.left-margin.right*2) + ")")

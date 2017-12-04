@@ -17,8 +17,6 @@ function Choropleth(json) {
       // chart.minimumColor = "#DCFF5B"; 
       // chart.maximumColor = "#E85138";
 
-      
-
       chart.colorScale = d3.scaleQuantize()
     .domain([0, 7000])
     .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
@@ -101,8 +99,6 @@ Choropleth.prototype.update = function (filteredData) {
           })
       .on("mouseover", mouseover) 
       .on("mouseout", mouseout)
-      //console.log(chart.colorScale(d.properties.visited))
-      // .on("click", clicked)
 
 
       function mouseover(d) {     
@@ -120,13 +116,6 @@ Choropleth.prototype.update = function (filteredData) {
          .style("opacity", 0); 
        }
        
-// d3.json("lahore_towns_geojson2.json", function(err, json) {
-
-// Bind the data to the SVG and create one path per GeoJSON feature
-
-// 
-// }
-
 }; 
   
 	    
