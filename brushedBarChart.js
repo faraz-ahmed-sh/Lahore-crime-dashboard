@@ -21,7 +21,25 @@ function brushedBarChart() {
         var gEnter = svgEnter.append("g");
         gEnter.append("g").attr("class", "x axis");
         gEnter.append("g").attr("class", "y axis");
-        gEnter.append("g").attr("class", "brush");
+        gBrush = gEnter.append("g").attr("class", "brush");
+
+
+        // style brush resize handle
+        // https://github.com/crossfilter/crossfilter/blob/gh-pages/index.html#L466
+        var brushResizePath = function(d) {
+            var e = +(d.type == "e"),
+                x = e ? 1 : -1,
+                y = height / 2;
+            return "M" + (.5 * x) + "," + y + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6) + "V" + (2 * y - 6) + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y) + "Z" + "M" + (2.5 * x) + "," + (y + 8) + "V" + (2 * y - 8) + "M" + (4.5 * x) + "," + (y + 8) + "V" + (2 * y - 8);
+        }
+
+        var handle = gBrush.selectAll(".handle--custom")
+          .data([{type: "w"}, {type: "e"}])
+          .enter().append("path")
+            .attr("class", "handle--custom")
+            .attr("stroke", "#000")
+            .attr("cursor", "ew-resize")
+            .attr("d", brushResizePath);
         
         //gBrush.selectAll("rect").attr("height", height);
 
@@ -35,21 +53,6 @@ function brushedBarChart() {
         // update the inner dimensions
         var g = svg.merge(svgEnter).select("g")
           .attr("transform", "translate(" + margin.left + "," +  margin.top + ")");
-
-        // var brush = d3.brush()
-        //   .extent([xScale(.95), xScale(1.05)])
-        //   .on("brush", brushmove);
-          
-        // var brushg = gEnter.append("g")
-        //     .attr("class", "brush")
-        //     .call(brush)
-
-        // brushg.selectAll("rect")
-        //     .attr("height", height/2);
-
-        // brushg.selectAll(".resize")
-        //     .append("path")
-        //     .attr("d", resizePath);
 
         xScale.range([0, innerWidth]);
 
@@ -80,37 +83,34 @@ function brushedBarChart() {
         g.select(".brush").call(d3.brushX()
           .extent([[0,0], [innerWidth, innerHeight]])
           .on("brush", brushed));
+        
 
+        function brushed() {
+
+          var s = d3.event.selection;
+              if (s == null) {
+                handle.attr("display", "none");
+                bars.classed("active", false);
+                //onBrushed(s);
+              } else {
+                //onBrushed(s);
+                var sx = s.map(xScale.invert);
+                bars.classed("active", function(d) { return sx[0] <= d && d <= sx[1]; });
+                handle.attr("display", null).attr("transform", function(d, i) { return "translate(" + [ s[i], - height / 4] + ")"; });
+                onBrushed(sx);
+              }
+              //onBrushed(s);
+    }
       });
 
     }
 
-    function brushed() {
-      if (!d3.event.sourceEvent) return; // Only transition after input.
-      if (!d3.event.selection) return; // Ignore empty selections.
-
-      var selection = d3.event.selection.map(xScale.invert);
-
-      //console.log(selected)
-      //console.log("fa")
-
-      onBrushed(selection);
-      //update();
-    }
-
+  
     chart.margin = function (_) {
       if (!arguments.length) return margin;
       margin = _;
       return chart;
     };
-
-
-
-    // chart.dimension = function (_) {
-    //   if (!arguments.length) return dimension;
-    //   dimension = _;
-    //   return chart;
-    // };
 
     chart.width = function (_) {
       if (!arguments.length) return width;
@@ -136,19 +136,13 @@ function brushedBarChart() {
       return chart;
     };
 
-    // chart.group = function (_) {
-    //   if (!arguments.length) return group;
-    //   group = _;
-    //   return chart;
-    // };
-
     chart.onBrushed = function (_) {
       if (!arguments.length) return onBrushed;
       onBrushed = _;
       return chart;
     };
 
-    //chart.gBrush = () => gBrush;
+    chart.gBrush = () => gBrush;
 
     return chart;
   

@@ -1,8 +1,21 @@
 
-
+.chart {
+    display: inline-block;
+    height: 151px;
+    margin-bottom: 20px;
+  }
 
 .bar {
   fill: red;
+}
+
+.bar {
+  fill-opacity: 0.7;
+  transition: fill-opacity 250ms linear;
+}
+
+.bar .active {
+  stroke: #f00;
 }
 /*#neighborhood-chart .bar:hover {
   mode: false;
@@ -14,10 +27,11 @@
   display: none;
 }*/
 
-.chart {
-    display: inline-block;
-    height: 151px;
-    margin-bottom: 20px;
+
+
+.brush-handle {
+    fill: #eee;
+    stroke: #666;
   }
 
 
@@ -47,22 +61,14 @@ div.tooltip {
 }
 
 .q0-9 { fill:#b2182b; }
-  .q1-9 { fill:#d6604d; }
-  .q2-9 { fill:#f4a582; }
-  .q3-9 { fill:#fddbc7; }
-  .q4-9 { fill:#f7f7f7; }
-  .q5-9 { fill:#d1e5f0; }
-  .q6-9 { fill:#92c5de; }
-  .q7-9 { fill:#4393c3; }
-  .q8-9 { fill:#2166ac; }
-
-.map_neighbourhood {
-            fill: #1f77b4;
-        }
-.map_neighbourhood:hover {
-    fill: #636363;
-    cursor: pointer;
-}
+.q1-9 { fill:#d6604d; }
+.q2-9 { fill:#f4a582; }
+.q3-9 { fill:#fddbc7; }
+.q4-9 { fill:#f7f7f7; }
+.q5-9 { fill:#d1e5f0; }
+.q6-9 { fill:#92c5de; }
+.q7-9 { fill:#4393c3; }
+.q8-9 { fill:#2166ac; }
 
 /*.map {
     display: inline-block;

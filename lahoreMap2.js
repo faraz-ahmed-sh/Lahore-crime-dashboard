@@ -1,7 +1,6 @@
-function lahoreMap2(data) {
+function lahoreMap2(change, neighborhood) {
       var mapWidth = 550;
       var mapHeight = 550;
-
       // function chart (selection) {
 
       	var svg = d3.select("#pakistanMap").selectAll("svg").data([data]);
