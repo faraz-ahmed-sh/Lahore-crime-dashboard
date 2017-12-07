@@ -96,7 +96,7 @@ function timeSeriesChart2() {
             .attr("cursor", "ew-resize")
             .attr("d", brushResizePath);
 
-        gBrush.call(brush.move, [2, 9].map(xScale));
+        gBrush.call(brush.move, [0, 0].map(xScale));
 
         function brushed() {
 
