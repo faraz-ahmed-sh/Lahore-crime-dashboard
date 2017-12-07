@@ -8,32 +8,39 @@ var parseTime3 = d3.timeParse("%H");
 var parseTime4 = d3.timeParse("%S");
 var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
 
-var myDateChart = timeSeriesChart()
-  .width(1000)
-  .x(function (d) { return d.key;})
-  .y(function (d) { return d.value;})
-  .scalex(d3.scaleTime())
-  .domainx([new Date(2014, 0, 1), new Date(2014,5, 31)]);
 
 var myNeighborhoodChart = barChart()
-  .width(600)
+  .width(300)
+  .height(300)
   .x(function (d) { return d.key;})
   .y(function (d) { return d.value;});
 
+
 var myCrimeTypeChart = barChart()
-          .width(350)
-          .height(300)
-          .x(function (d) { return d.key;})
-          .y(function (d) { return d.value;});  
+  .width(350)
+  .height(300)
+  .x(function (d) { return d.key;})
+  .y(function (d) { return d.value;});  
 
 
-var myHourChart = timeSeriesChart()
-      .width(300)
-      .height(300)
-      .x(function (d) { return d.key;})
-      .y(function (d) { return d.value;})
-      .scalex(d3.scaleLinear())
-      .domainx([0, 24]);
+var myDateChart = timeSeriesChart2()
+  .width(300)
+  .height(300)
+  .scalex(d3.scaleTime())
+  .domainx([new Date(2014, 0, 1), new Date(2014,5, 31)])
+  .x(function (d) { return d.key;})
+  .y(function (d) { return d.value;});
+  
+
+
+var myHourChart = timeSeriesChart2()
+  .width(300)
+  .height(300)
+  .scalex(d3.scaleLinear())
+  .domainx([0, 24])
+  .x(function (d) { return d.key;})
+  .y(function (d) { return d.value;});
+
 
 d3.json("data/lahore_crime_14.json", function(error, data) {
   if (error) throw error;
@@ -84,42 +91,59 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
   // crimeData.all = ndx.groupAll();
 
     //Make charts and activate brushes/mouseovers
-    //console.log(crimeData.neighborhoodGroup.all())
+
+    d3.queue()
+      .defer(d3.json, 'lahore_towns_geojson2.json')
+      .awaitAll(function (error, results) {
+        if (error) { throw error; }
+
+        map = new Choropleth(results[0]);
+        map.update(crimeData.neighborhoodGroup.all());
+      });
 
   myNeighborhoodChart.onMouseOver(function (d) {
     crimeData.neighborhoodDim.filter(d.key);
-    //console.log(neighborhoodDim.filter(d.key))
     update();
-    //map.update(neighborhoodGroup.all())
+    map.update(crimeData.neighborhoodGroup.all())
   }).onMouseOut(function (d) {
     crimeData.neighborhoodDim.filterAll()
     update();
-    //map.update(neighborhoodGroup.all())
+    map.update(crimeData.neighborhoodGroup.all())
   });
 
-  myDateChart.onBrushed(function (select) {
-    crimeData.date.filter(select);
-    update();
-    //map.update(crimeData.neighborhoodGroup.all())
-  });
 
-  myHourChart.onBrushed(function (selected) {
-  crimeData.hourDim.filter(selected);
-  update();
-  //map.update(crimeData.neighborhoodGroup.all())
-  });
-   
-
-   
   myCrimeTypeChart.onMouseOver(function (d) {
     crimeData.crimeTypeDim.filter(d.key);
     update();
-    //map.update(crimeData.neighborhoodGroup.all())
+    map.update(crimeData.neighborhoodGroup.all())
   }).onMouseOut(function (d) {
     crimeData.crimeTypeDim.filterAll();
     update();
-    //map.update(crimeData.neighborhoodGroup.all())
+    map.update(crimeData.neighborhoodGroup.all())
   });
+
+    myDateChart.onBrushed(function (select) {
+    crimeData.date.filter(select);
+    update();
+    map.update(crimeData.neighborhoodGroup.all())
+  });
+
+  myHourChart.onBrushed(function (selected) {
+    crimeData.hourDim.filter(selected);
+    update();
+    map.update(crimeData.neighborhoodGroup.all())
+  });
+
+
+  function reset() {
+    crimeData.neighborhoodDim.filter(null);
+    crimeData.crimeTypeDim.filter(null);
+    crimeData.date.filter(null);
+    crimeData.hourDim.filter(null);
+
+    update();
+  }
+
 
   //render the charts
 
@@ -147,7 +171,11 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
     .datum(crimeData.hourGroup.all())
     .call(myHourChart);
 
+    d3.select("button").on("click", reset);
+
   }
+
+
 
   update();
 }

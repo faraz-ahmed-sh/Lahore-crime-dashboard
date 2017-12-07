@@ -24,7 +24,7 @@ function brushedBarChart() {
         //gBrush = gEnter.append("g").attr("class", "brush");
 
         var brush = d3.brushX()
-        .extent([[0, 0], [width, height-50]])
+        .extent([[0, 0], [width, height]])
         .on("start brush end", brushed);
 
         //gBrush.selectAll("rect").attr("height", height);
@@ -98,16 +98,14 @@ function brushedBarChart() {
                 bars.classed("active", false);
                 //onBrushed(s);
               } else {
-                //onBrushed(s);
                 var sx = s.map(xScale.invert);
+                console.log(sx)
                 bars.classed("active", function(d) { return sx[0] <= d && d <= sx[1]; });
                 handle.attr("display", null).attr("transform", function(d, i) { return "translate(" + [ s[i], - height / 4] + ")"; });
                 onBrushed(sx);
               }
-              //onBrushed(s);
-    }
+            }
       });
-
     }
 
   

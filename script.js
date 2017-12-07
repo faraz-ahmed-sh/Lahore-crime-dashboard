@@ -92,16 +92,16 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
           .x(d3.scaleBand()
             .domain(crimeData.neighborhoodGroup.all().map(function (d) { return d.key; })));
 
-    // myNeighborhoodChart.onMouseOver(function (d) {
-    //   neighborhoodDim.filter(d.key);
-    //   //console.log(neighborhoodDim.filter(d.key))
-    //   update();
-    //   map.update(neighborhoodGroup.all())
-    // }).onMouseOut(function (d) {
-    //   neighborhoodDim.filterAll()
-    //   update();
-    //   map.update(neighborhoodGroup.all())
-    // });
+    myNeighborhoodChart.onMouseOver(function (d) {
+      neighborhoodDim.filter(d.key);
+      //console.log(neighborhoodDim.filter(d.key))
+      update();
+      map.update(neighborhoodGroup.all())
+    }).onMouseOut(function (d) {
+      neighborhoodDim.filterAll()
+      update();
+      map.update(neighborhoodGroup.all())
+    });
 
     
 var myCrimeTypeChart = mouseonBarChart()

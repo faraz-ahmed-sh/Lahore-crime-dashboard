@@ -1,17 +1,21 @@
 /* global d3 */
-function timeSeriesChart() {
-  var margin = {top: 20, right: 20, bottom: 20, left: 20},
-    // width = 760,
-    // height = 320,
+
+function timeSeriesChart2() {
+
+  var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 400,
+    height = 400,
+    innerWidth = width - margin.left - margin.right,
+    innerHeight = height - margin.top - margin.bottom,
     xValue = function(d) { return d.key; },
     yValue = function(d) { return d.value; },
+    domainx,
     xScale,
     yScale = d3.scaleLinear(),
-    domainx,
     onBrushed = function () {};
 
   function chart(selection) {
-    selection.each(function(data) {
+    selection.each(function (data) {
 
       // Select the svg element, if it exists.
       var svg = d3.select(this).selectAll("svg").data([data]);
@@ -21,7 +25,6 @@ function timeSeriesChart() {
       var gEnter = svgEnter.append("g");
       gEnter.append("g").attr("class", "x axis");
       gEnter.append("g").attr("class", "y axis");
-      //gEnter.append("g").attr("class", "brush")
 
       var brush = d3.brushX()
         .extent([[0, 0], [width-30, height-40]])
@@ -38,10 +41,9 @@ function timeSeriesChart() {
       var g = svg.merge(svgEnter).select("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
       xScale.rangeRound([0, innerWidth])
         .domain(domainx);
-
-      //console.log(yValue)
 
       yScale.rangeRound([innerHeight, 0])
         .domain([0, d3.max(data, yValue)]);
@@ -51,24 +53,27 @@ function timeSeriesChart() {
           .call(d3.axisBottom(xScale));
 
       g.select(".y.axis")
-          .call(d3.axisLeft(yScale).ticks(7));
-        // .append("text")
-        //   .attr("transform", "rotate(-90)")
-        //   .attr("y", 6)
-        //   .attr("dy", "0.71em")
-        //   .attr("text-anchor", "end")
-        //   .text("Frequency");
+          .call(d3.axisLeft(yScale).ticks(10))
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", "0.71em")
+          .attr("text-anchor", "end")
+          .text("Frequency");
 
       var bars = g.selectAll(".bar")
         .data(function (d) { return d; });
 
       bars.enter().append("rect")
           .attr("class", "bar")
-          .merge(bars)
+        .merge(bars)
           .attr("x", X)
           .attr("y", Y)
           .attr("width", (width-(width/data.length)) / (data.length+8))
           .attr("height", function(d) { return innerHeight - Y(d); });
+
+      bars.exit().remove();
+
 
       var gBrush = gEnter.append("g")
           .attr("class", "brush")
@@ -91,7 +96,7 @@ function timeSeriesChart() {
             .attr("cursor", "ew-resize")
             .attr("d", brushResizePath);
 
-        gBrush.call(brush.move, [0, 0].map(xScale));
+        gBrush.call(brush.move, [2, 9].map(xScale));
 
         function brushed() {
 
@@ -103,14 +108,15 @@ function timeSeriesChart() {
               } else {
                 //onBrushed(s);
                 var sx = s.map(xScale.invert);
-                console.log(sx)
                 bars.classed("active", function(d) { return sx[0] <= d && d <= sx[1]; });
                 handle.attr("display", null).attr("transform", function(d, i) { return "translate(" + [ s[i], - height / 4] + ")"; });
                 onBrushed(sx);
               }
-            };
+              //onBrushed(s);
+            }
     });
-  };
+
+  }
 
 // The x-accessor for the path generator; xScale ∘ xValue.
   function X(d) {
@@ -152,17 +158,18 @@ function timeSeriesChart() {
     return chart;
   };
 
-  chart.scalex = function(_) {
+    chart.scalex = function(_) {
     if (!arguments.length) return xScale;
     xScale = _;
     return chart;
   };
 
-  chart.domainx = function(_) {
+    chart.domainx = function(_) {
     if (!arguments.length) return domainx;
     domainx = _;
     return chart;
   };
+
 
 
   chart.onBrushed = function(_) {
@@ -171,5 +178,9 @@ function timeSeriesChart() {
     return chart;
   };
 
+
   return chart;
 }
+
+
+

@@ -62,6 +62,12 @@ path:hover {
   fill-opacity: .7;
 }
 
+.reset {
+    padding-left: 1em;
+    font-size: smaller;
+    color: #ccc;
+  }
+
 /* Style for Custom Tooltip */
 div.tooltip {   
   position: absolute;           
@@ -85,23 +91,3 @@ div.tooltip {
   .q2-9 { fill:#92c5de; }
   .q1-9 { fill:#4393c3; }
   .q0-9 { fill:#2166ac; }
-
-/*.map {
-    display: inline-block;
-    height: 151px;
-    margin-bottom: 20px;
-  }
-*/
-
-/*#map {
-  float: center;
-}
-
-#map-legend{
-  text-align: center; 
-}
-
-#title {
-    right: 40px;
-}*/
-

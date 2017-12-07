@@ -26,6 +26,11 @@ function barChart() {
       gEnter.append("g").attr("class", "x axis");
       gEnter.append("g").attr("class", "y axis");
 
+      svg.select('.title').append('a')
+            .attr('class', 'reset')
+            .text('reset')
+            .style('display', 'none');
+
       innerWidth = width - margin.left - margin.right
       innerHeight = height - margin.top - margin.bottom
 
