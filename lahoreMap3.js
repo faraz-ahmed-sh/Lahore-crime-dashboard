@@ -92,8 +92,6 @@ Choropleth.prototype.update = function (filteredData) {
       chart.map
         .attr("class", function(d) { 
 
-          //console.log(chart.colorScale(d.properties.visited))
-
             return chart.colorScale(d.properties.visited);
 
           })

@@ -11,7 +11,7 @@ var parseTime4 = d3.timeParse("%S");
 var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
 
 
-var myDateChart = brushedBarChart2()
+var myDateChart = brushedBarChart()
       .width(300)
       .height(300)
       .x(d3.scaleTime()
@@ -55,41 +55,42 @@ d3.json("Data/lahore_crime_14.json", function(error, data) {
 
   dataset = data;
 
+  //console.log(dataset)
+
   //Create a Crossfilter instance for the crime dataset
-  var ndx = crossfilter(dataset);
+  var crimeData = crossfilter(dataset);
 
   //Define Dimensions
-  var crimeTypeDim = ndx.dimension(function(d) { return d["Crime Type"]; });
-  var date = ndx.dimension(function(d) { return d["Date"] });
-  var hourDim = ndx.dimension(function(d) {return d["Date"].getHours() + d["Date"].getMinutes() / 60});
-  var neighborhoodDim = ndx.dimension(function(d) { return d["Neighborhood"]; });
-  var allDim = ndx.dimension(function(d) {return d;});
+  crimeData.crimeTypeDim = crimeData.dimension(function(d) { return d["Crime Type"]; });
+  crimeData.date = crimeData.dimension(function(d) { return d["Date"] });
+  crimeData.hourDim = crimeData.dimension(function(d) {return d["Date"].getHours() + d["Date"].getMinutes() / 60});
+  crimeData.neighborhoodDim = crimeData.dimension(function(d) { return d["Neighborhood"]; });
+  // crimeData.allDim = crimeData.dimension(function(d) {return d;});
 
   //Group Data
-  var crimeTypeGroup = crimeTypeDim.group();
-  var dateGroup = date.group(d3.timeWeek);
-  var hourGroup = hourDim.group(Math.floor);
-  var neighborhoodGroup = neighborhoodDim.group();
-  var all = ndx.groupAll();
+  crimeData.crimeTypeGroup = crimeData.crimeTypeDim.group();
+  crimeData.dateGroup = crimeData.date.group(d3.timeWeek);
+  crimeData.hourGroup = crimeData.hourDim.group(Math.floor);
+  crimeData.neighborhoodGroup = crimeData.neighborhoodDim.group();
+  // crimeData.all = ndx.groupAll();
 
     //Make charts and activate brushes/mouseovers
     myDateChart.onBrushed(function (select) {
-      date.filter(select);
+      crimeData.date.filter(select);
       update();
-      map.update(neighborhoodGroup.all())
+      map.update(crimeData.neighborhoodGroup.all())
     });
 
     myHourChart.onBrushed(function (selected) {
-      hourDim.filter(selected);
+      crimeData.hourDim.filter(selected);
       update();
-      map.update(neighborhoodGroup.all())
-
+      map.update(crimeData.neighborhoodGroup.all())
     });
    
-   var myNeighborhoodChart = nBarChart()
+   var myNeighborhoodChart = mouseonBarChart()
           .width(300)
           .x(d3.scaleBand()
-            .domain(neighborhoodGroup.all().map(function (d) { return d.key; })));
+            .domain(crimeData.neighborhoodGroup.all().map(function (d) { return d.key; })));
 
     // myNeighborhoodChart.onMouseOver(function (d) {
     //   neighborhoodDim.filter(d.key);
@@ -107,16 +108,16 @@ var myCrimeTypeChart = mouseonBarChart()
         .width(350)
         .height(300)
         .x(d3.scaleBand()
-          .domain(crimeTypeGroup.all().map(function (d) { return d.key; })));
+          .domain(crimeData.crimeTypeGroup.all().map(function (d) { return d.key; })));
    
     myCrimeTypeChart.onMouseOver(function (d) {
-      crimeTypeDim.filter(d.key);
+      crimeData.crimeTypeDim.filter(d.key);
       update();
-      map.update(neighborhoodGroup.all())
+      map.update(crimeData.neighborhoodGroup.all())
     }).onMouseOut(function (d) {
-      crimeTypeDim.filterAll();
+      crimeData.crimeTypeDim.filterAll();
       update();
-      map.update(neighborhoodGroup.all())
+      map.update(crimeData.neighborhoodGroup.all())
     });
 
 
@@ -126,7 +127,7 @@ var myCrimeTypeChart = mouseonBarChart()
         if (error) { throw error; }
 
         map = new Choropleth(results[0]);
-        map.update(neighborhoodGroup.all());
+        map.update(crimeData.neighborhoodGroup.all());
         //console.log(neighborhoodGroup.all())
       });
 
@@ -135,25 +136,25 @@ var myCrimeTypeChart = mouseonBarChart()
     function update() {
 
       d3.select("#neighborhood-chart")
-      .datum(neighborhoodGroup.all())
+      .datum(crimeData.neighborhoodGroup.all())
       .call(myNeighborhoodChart)
       .select(".x.axis")
       .selectAll(".tick text")
       .attr("transform", "rotate(-90) translate(-6,-10)");
 
       d3.select("#crime-type-chart")
-      .datum(crimeTypeGroup.all())
+      .datum(crimeData.crimeTypeGroup.all())
       .call(myCrimeTypeChart)
       .select(".x.axis")
       .selectAll(".tick text")
       .attr("transform", "rotate(-90) translate(-6,-10)");
 
       d3.select("#date-chart")
-      .datum(dateGroup.all())
+      .datum(crimeData.dateGroup.all())
       .call(myDateChart);
 
       d3.select("#hour-chart")
-      .datum(hourGroup.all())
+      .datum(crimeData.hourGroup.all())
       .call(myHourChart);
     }
 
