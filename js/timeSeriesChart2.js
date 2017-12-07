@@ -27,7 +27,7 @@ function timeSeriesChart2() {
       gEnter.append("g").attr("class", "y axis");
 
       var brush = d3.brushX()
-        .extent([[0, 0], [width-30, height-40]])
+        .extent([[0, 0], [width-60, height-50]])
         .on("start brush end", brushed);
 
       innerWidth = width - margin.left - margin.right
@@ -41,7 +41,6 @@ function timeSeriesChart2() {
       var g = svg.merge(svgEnter).select("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
       xScale.rangeRound([0, innerWidth])
         .domain(domainx);
 
@@ -53,7 +52,7 @@ function timeSeriesChart2() {
           .call(d3.axisBottom(xScale));
 
       g.select(".y.axis")
-          .call(d3.axisLeft(yScale).ticks(10))
+          .call(d3.axisLeft(yScale).ticks(7))
         .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", 6)
@@ -61,18 +60,18 @@ function timeSeriesChart2() {
           .attr("text-anchor", "end")
           .text("Frequency");
 
-      var bars = g.selectAll(".bar")
+      var bar = g.selectAll(".bar")
         .data(function (d) { return d; });
 
-      bars.enter().append("rect")
+      bar.enter().append("rect")
           .attr("class", "bar")
-        .merge(bars)
+        .merge(bar)
           .attr("x", X)
           .attr("y", Y)
-          .attr("width", (width-(width/data.length)) / (data.length+8))
+          .attr("width", (width-(width/data.length)) / (data.length+6))
           .attr("height", function(d) { return innerHeight - Y(d); });
 
-      bars.exit().remove();
+      bar.exit().remove();
 
 
       var gBrush = gEnter.append("g")
@@ -103,12 +102,11 @@ function timeSeriesChart2() {
           var s = d3.event.selection;
               if (s == null) {
                 handle.attr("display", "none");
-                bars.classed("active", false);
-                //onBrushed(s);
+                bar.classed("active", false);
               } else {
                 //onBrushed(s);
                 var sx = s.map(xScale.invert);
-                bars.classed("active", function(d) { return sx[0] <= d && d <= sx[1]; });
+                bar.classed("active", function(d) { return sx[0] >= d && d <= sx[1]; });
                 handle.attr("display", null).attr("transform", function(d, i) { return "translate(" + [ s[i], - height / 4] + ")"; });
                 onBrushed(sx);
               }

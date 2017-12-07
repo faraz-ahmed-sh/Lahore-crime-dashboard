@@ -1,24 +1,54 @@
 
-/*.chart {
-    display: inline-block;
-    height: 151px;
-    margin-bottom: 20px;
-  }
-*/
+p1 {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #fff;
+  margin-top: 10px;
+}
+
 .bar {
   fill: red;
 }
 
-.bar {
+/*.bar {
   fill-opacity: 0.7;
   transition: fill-opacity 250ms linear;
-}
+}*/
 
 #crime-type-chart .x.axis text {
   text-anchor: end;
 }
 
 #crime-type-chart svg {
+  overflow: visible;
+}
+
+#date-chart .x.axis text {
+  text-anchor: end;
+}
+
+#date-chart svg {
   overflow: visible;
 }
 
@@ -30,14 +60,30 @@
   overflow: visible;
 }
 
-/*#hour-chart .bar {
-  fill-opacity: 0.2;
+.bar {
+  fill-opacity: 0.6;
   transition: fill-opacity 250ms linear;
 }
 
-#date-chart .bar {
+/*.bar:active {
+  stroke: #f00;
+  fill: blue;
+}
+
+*/
+/*#hour-chart .bar {
   fill-opacity: 0.2;
   transition: fill-opacity 250ms linear;
+}*/
+
+/*#date-chart .bar {
+  fill-opacity: 0.2;
+  transition: fill-opacity 250ms linear;
+}*/
+
+
+/*#date-chart bar.active {
+  stroke: steelblue;
 }*/
 
 /*#hour-chart bar:active {

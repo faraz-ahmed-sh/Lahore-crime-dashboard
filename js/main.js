@@ -9,33 +9,32 @@ var parseTime4 = d3.timeParse("%S");
 var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
 
 
-var myNeighborhoodChart = barChart()
-  .width(300)
-  .height(300)
-  .x(function (d) { return d.key;})
-  .y(function (d) { return d.value;});
-
 
 var myCrimeTypeChart = barChart()
-  .width(350)
-  .height(300)
+  .width(330)
+  .height(250)
   .x(function (d) { return d.key;})
-  .y(function (d) { return d.value;});  
+  .y(function (d) { return d.value;}); 
+
+
+var myNeighborhoodChart = barChart()
+  .width(300)
+  .height(250)
+  .x(function (d) { return d.key;})
+  .y(function (d) { return d.value;});
 
 
 var myDateChart = timeSeriesChart2()
-  .width(300)
-  .height(300)
+  .width(320)
+  .height(250)
   .scalex(d3.scaleTime())
-  .domainx([new Date(2014, 0, 1), new Date(2014,5, 31)])
+  .domainx([new Date(2014, 0, 1), new Date(2014,11, 31)])
   .x(function (d) { return d.key;})
   .y(function (d) { return d.value;});
-  
-
 
 var myHourChart = timeSeriesChart2()
   .width(300)
-  .height(300)
+  .height(250)
   .scalex(d3.scaleLinear())
   .domainx([0, 24])
   .x(function (d) { return d.key;})
@@ -49,6 +48,7 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
 
   // filter the data for null values in d["Time"]
   function filterCriteria(d) {
+      //console.log(d["Crime Type"])
       return (d.Date != "2014-05-15" && d.Date != "2014-11-12" && d.Date != "2014-04-23" && d.Date != "2014-02-25" && d.Date != "2014-01-01" && d.Date != "2014-08-18");
     }
 
@@ -86,7 +86,7 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
   //Group Data
   crimeData.crimeTypeGroup = crimeData.crimeTypeDim.group();
   crimeData.neighborhoodGroup = crimeData.neighborhoodDim.group();
-  crimeData.dateGroup = crimeData.date.group(d3.timeWeek);
+  crimeData.dateGroup = crimeData.date.group(d3.timeMonth);
   crimeData.hourGroup = crimeData.hourDim.group(Math.floor);
   // crimeData.all = ndx.groupAll();
 
@@ -149,23 +149,26 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
 
   function update() {
 
+    d3.select("#crime-type-chart")
+    .datum(crimeData.crimeTypeGroup.top(20))
+    .call(myCrimeTypeChart)
+    .select(".x.axis")
+    .selectAll(".tick text")
+    .attr("transform", "rotate(-90) translate(-10,-10)");
+
     d3.select("#neighborhood-chart")
     .datum(crimeData.neighborhoodGroup.all())
     .call(myNeighborhoodChart)
     .select(".x.axis")
     .selectAll(".tick text")
-    .attr("transform", "rotate(-90) translate(-6,-10)");
-
-    d3.select("#crime-type-chart")
-    .datum(crimeData.crimeTypeGroup.all())
-    .call(myCrimeTypeChart)
-    .select(".x.axis")
-    .selectAll(".tick text")
-    .attr("transform", "rotate(-90) translate(-6,-10)");
+    .attr("transform", "rotate(-90) translate(-10,-10)");
 
     d3.select("#date-chart")
     .datum(crimeData.dateGroup.all())
-    .call(myDateChart);
+    .call(myDateChart)
+    .select(".x.axis")
+    .selectAll(".tick text")
+    .attr("transform", "rotate(-90) translate(-10,-10)");
 
     d3.select("#hour-chart")
     .datum(crimeData.hourGroup.all())

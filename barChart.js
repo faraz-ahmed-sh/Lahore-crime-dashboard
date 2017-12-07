@@ -11,7 +11,7 @@ function barChart() {
     yValue = function(d) { return d[1]; },
     xScale = d3.scaleBand().padding(0.1),
     yScale = d3.scaleLinear(),
-    transTime = 400,
+    var transTime = 400;
     onMouseOver = function () { },
     onMouseOut = function () { };
 
@@ -52,11 +52,20 @@ function barChart() {
       g.select(".x.axis")
           .attr("transform", "translate(0," + innerHeight + ")")
           .transition()
-          .duration(transTime).delay(200)
+          .duration(transTime).delay(400)
           .call(d3.axisBottom(xScale));
 
-      g.select(".y.axis")
-          .call(d3.axisLeft(yScale).ticks(8));
+      g.select(".y.axis") 
+          .transition()
+
+          .call(d3.axisLeft(yScale).ticks(10))
+
+          .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", "0.71em")
+          .attr("text-anchor", "end")
+          .text("Frequency");
 
       var bars = g.selectAll(".bar")
         .data(function (d) { return d; });
@@ -127,7 +136,6 @@ function barChart() {
     onMouseOut = _;
     return chart;
   };
-
 
   return chart;
 }

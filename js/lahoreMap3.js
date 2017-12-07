@@ -3,7 +3,7 @@
 function Choropleth(json) {
       var margin = {top: 0, right: 20, bottom: 30, left: 40},
       mapWidth = 550,
-      mapHeight = 550,
+      mapHeight = 500,
 
       chart = this;
       chart.json = json;
@@ -35,7 +35,7 @@ function Choropleth(json) {
         };
 
       chart.projection = d3.geoMercator()
-        .scale([45000])
+        .scale([40000])
         .center([74.6, 31.5]) // set centre to further North
         .translate([465, 250]) // ensure centred in group
 
