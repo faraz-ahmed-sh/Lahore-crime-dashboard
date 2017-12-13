@@ -1,4 +1,5 @@
-/* global d3 */
+
+//code blocks inspiration from https://github.com/john-guerra/d3BrushAndLinkingExample/blob/master/js/timeSeriesChart.js
 
 function timeSeriesChart2() {
 
@@ -99,6 +100,8 @@ function timeSeriesChart2() {
 
         function brushed() {
 
+          //code inspiration: Mike Bostock's https://bl.ocks.org/mbostock/4349545
+
           var s = d3.event.selection;
               if (s == null) {
                 handle.attr("display", "none");
@@ -110,7 +113,6 @@ function timeSeriesChart2() {
                 handle.attr("display", null).attr("transform", function(d, i) { return "translate(" + [ s[i], - height / 4] + ")"; });
                 onBrushed(sx);
               }
-              //onBrushed(s);
             }
     });
 
@@ -167,7 +169,6 @@ function timeSeriesChart2() {
     domainx = _;
     return chart;
   };
-
 
 
   chart.onBrushed = function(_) {

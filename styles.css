@@ -31,10 +31,6 @@ body {
   fill: red;
 }
 
-/*.bar {
-  fill-opacity: 0.7;
-  transition: fill-opacity 250ms linear;
-}*/
 
 #crime-type-chart .x.axis text {
   text-anchor: end;
@@ -64,32 +60,6 @@ body {
   fill-opacity: 0.6;
   transition: fill-opacity 250ms linear;
 }
-
-/*.bar:active {
-  stroke: #f00;
-  fill: blue;
-}
-
-*/
-/*#hour-chart .bar {
-  fill-opacity: 0.2;
-  transition: fill-opacity 250ms linear;
-}*/
-
-/*#date-chart .bar {
-  fill-opacity: 0.2;
-  transition: fill-opacity 250ms linear;
-}*/
-
-
-/*#date-chart bar.active {
-  stroke: steelblue;
-}*/
-
-/*#hour-chart bar:active {
-  stroke: #f00;
-}
-*/
 
 .brush-handle {
     fill: #eee;
@@ -127,6 +97,8 @@ div.tooltip {
   border-radius: 10px;           
   pointer-events: none;         
 }
+
+/* following code block inspiration: http://bl.ocks.org/stevenae/8362841*/
 
 .q8-9 { fill:#b2182b; }
   .q7-9 { fill:#d6604d; }

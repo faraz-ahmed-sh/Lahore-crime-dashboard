@@ -1,14 +1,11 @@
-/* global d3, crossfilter, timeSeriesChart, barChart */
 
-//load the data
+//parseTime functions
 var parseDate = d3.timeParse("%Y-%m-%d");
 var parseTime = d3.timeParse("%H%M%S");
 var parseTime2 = d3.timeParse("%H%M");
 var parseTime3 = d3.timeParse("%H");
 var parseTime4 = d3.timeParse("%S");
 var parseDateTime = d3.timeFormat("%Y, %m, %d, %H, %M");
-
-
 
 var myCrimeTypeChart = barChart()
   .width(330)
@@ -41,6 +38,7 @@ var myHourChart = timeSeriesChart2()
   .y(function (d) { return d.value;});
 
 
+//load the data
 d3.json("data/lahore_crime_14.json", function(error, data) {
   if (error) throw error;
   var data = data.filter(filterCriteria);
@@ -48,7 +46,6 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
 
   // filter the data for null values in d["Time"]
   function filterCriteria(d) {
-      //console.log(d["Crime Type"])
       return (d.Date != "2014-05-15" && d.Date != "2014-11-12" && d.Date != "2014-04-23" && d.Date != "2014-02-25" && d.Date != "2014-01-01" && d.Date != "2014-08-18");
     }
 
@@ -149,6 +146,7 @@ d3.json("data/lahore_crime_14.json", function(error, data) {
 
   function update() {
 
+    //only show top 20 crime types
     d3.select("#crime-type-chart")
     .datum(crimeData.crimeTypeGroup.top(20))
     .call(myCrimeTypeChart)
