@@ -1,5 +1,7 @@
 /* global d3 */
 
+//code blocks inspiration from https://github.com/john-guerra/d3BrushAndLinkingExample/blob/master/js/barChart.js
+
 function barChart() {
 
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
