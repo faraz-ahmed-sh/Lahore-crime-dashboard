@@ -2,7 +2,7 @@
 
 The crime rate can be analyzed by the hour of the day, date of the occurrence of the crime, and the type of crime for each of the 10 union towns (Ravi, Shalamar, Wagha, Aziz Bhatti, Data Gunj Baksh, Gulberg, Samanabad, Iqbal, Nishtar and Cantonment) of the city.
 
-###### Click on this website(faraz-ahmed-sh.github.io), built using GitHub Pages, to play with the dashboard: 
+###### Click on this [website](faraz-ahmed-sh.github.io), built using GitHub Pages, to play with the dashboard: 
 
 **Tools used in this project:**
 
